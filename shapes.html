@@ -23,7 +23,7 @@ h1{font-size:30px;letter-spacing:-1px;margin:0}.intro{color:#657567;max-width:85
 @media(max-width:720px){main{padding:22px 15px}.viewer{grid-template-columns:1fr}.canvas{min-height:420px}header{align-items:flex-start;flex-direction:column}}
 </style></head>
 <body>
-<header><strong>HandRaw Man · 形体素材审查</strong><div class="nav"><a href="./index.html">Open Peeps 原件</a><a href="./candidates.html">旧头形候选</a><a href="./cut-editor.html">素材切割</a><a href="./docs/PHASE1-BAMBOO-QA-2026-11-08.md">完整审核记录</a></div></header>
+<header><strong>HandRaw Man · 形体素材审查</strong><div class="nav"><a href="./index.html">Open Peeps 原件</a><a href="./candidates.html">旧头形候选</a><a href="./cut-editor.html">素材切割</a><a href="./bamboo-parts.html">Bamboo 六部件实验</a><a href="./docs/PHASE1-BAMBOO-QA-2026-11-08.md">完整审核记录</a></div></header>
 <main>
 <h1>纯人物形体候选库</h1><p class="intro">这里只展示从真实生成图像得到的全身正视人体形体。无五官、无服饰、无固定身份。质量门槛严于普通素材图库：素材通过初步视觉检查，不代表已经正式发布。</p>
 <div class="kpis"><div class="kpi"><strong id="visual">—</strong><span>初步视觉合格</span></div><div class="kpi"><strong id="approved">—</strong><span>正式批准</span></div><div class="kpi"><strong>48</strong><span>计划策展母版</span></div></div>
@@ -50,6 +50,7 @@ async function init(){
  const dl=document.createElement("dl");dl.className="details";
  for(const [k,v] of [["来源","ChatGPT 内置生图"],["底层模型","未披露"],["原图尺寸",a.source.width+" × "+a.source.height],["裁切尺寸",a.processed.width+" × "+a.processed.height],["原图 SHA-256",a.source.sha256.slice(0,26)+"…"],["正式母版","尚未批准（draft）"]]){const dt=document.createElement("dt");dt.textContent=k;const dd=document.createElement("dd");dd.textContent=v;dl.append(dt,dd);}
  const actions=document.createElement("div");actions.className="buttons";
+ const partsLink=document.createElement("a");partsLink.href="./bamboo-parts.html";partsLink.textContent="查看六部件装配实验";partsLink.style.padding="11px 0";partsLink.style.fontSize="12px";actions.append(partsLink);
  const toggle=document.createElement("button");toggle.textContent="查看原始 PNG";let original=false;
  toggle.onclick=()=>{original=!original;img.src="./"+(original?a.source.file:a.processed.file);toggle.textContent=original?"查看透明 PNG":"查看原始 PNG";};
  const sourceLink=document.createElement("a");sourceLink.href="./"+a.source.file;sourceLink.textContent="下载完整源图";

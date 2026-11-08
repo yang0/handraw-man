@@ -32,6 +32,12 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - [路线图与验收](docs/ROADMAP.md)
 - [许可与素材来源策略](docs/LICENSING.md)
 
+## Bamboo-001 · 真实六部件拆分装配实验（Issue #5）
+
+- [六部件装配实验室](bamboo-parts.html)：真实透明 PNG 的头、躯干、左右手臂、左右腿；可以调整位置、显示/隐藏、导出 PNG/JSON。
+- [源像素切割脚本](scripts/slice_bamboo_001.py) · [技术验收与限制](docs/BAMBOO-PART-SLICING.md) · [六部件哈希/锚点清单](assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json)。
+- **原位六图层重组验证通过；自由摆姿的关节质量仍未通过**。6 张部件不是 6 个正式母版，全部保留草稿审核状态。
+
 ## 正视全身形体 · 第一件高质量候选（Issue #4）
 
 **[浏览 Bamboo-001 实际全身白模](shapes.html)**：已在 GitHub 保存真正的 **1024×1536 原始 PNG** 和 **394×1493 透明 PNG**（均有 Git Blob SHA-1 和 SHA-256），并完成一轮初步视觉审查。
