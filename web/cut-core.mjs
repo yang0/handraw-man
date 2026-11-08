@@ -121,7 +121,9 @@ export function makeDerivativeRecord({ source, crop, anchors, category, pngHash,
       sha256: "sha256:" + source.sha256,
       width: source.width,
       height: source.height,
-      licenseEvidence: source.licenseEvidence || "pending"
+      licenseEvidence: source.licenseEvidence || "pending",
+      generation: source.sourceKind === "ai-generated" ? structuredClone(source.generation || null) : null,
+      modelEvidence: source.sourceKind === "ai-generated" ? (source.modelEvidence || "unverified") : null
     },
     processed: {
       filename: "part-" + category + "-" + safeSlug(source.name) + "-" + pngHash.slice(0, 12) + ".png",

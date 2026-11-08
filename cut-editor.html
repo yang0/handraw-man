@@ -26,18 +26,19 @@
       <aside class="panel source-panel">
         <h2>① 选择源素材</h2>
         <p class="hint">164 个已导入的 SVG 原件，或本地上传 PNG / JPG / WebP；上传内容只在本机浏览器处理。</p>
-        <label for="sourceCategory">Open Peeps 类别</label>
-        <select id="sourceCategory"><option value="head">头部</option><option value="body">身体</option><option value="pose">姿势</option><option value="face">表情</option><option value="facial-hair">胡须</option><option value="accessories">配饰</option></select>
+        <label for="sourceCategory">素材来源 / 类别</label>
+        <select id="sourceCategory"><option value="head">头部</option><option value="body">身体</option><option value="pose">姿势</option><option value="face">表情</option><option value="facial-hair">胡须</option><option value="accessories">配饰</option><option value="ai-drafts">AI 草稿（本机生成）</option></select>
         <label for="sourceSelect">已归档原件</label>
         <select id="sourceSelect"></select>
         <button id="openSource" class="secondary" type="button">加载选中原件</button>
         <div class="or"><span>或</span></div>
         <label class="upload-area" for="uploadSource">
           <strong>上传自己的源图</strong>
-          <span>PNG / JPG / WebP · 不超过 20 MB</span>
+          <span>PNG / JPG / WebP · 不超过 32 MB</span>
         </label>
         <input type="file" id="uploadSource" accept="image/png,image/jpeg,image/webp" hidden>
         <div class="source-info" id="sourceInfo">正在加载素材清单…</div>
+        <p class="hint">AI 草稿由本机 CLI 调用真实模型生成，原图及审核记录保存在 <code>assets/sources/ai/drafts/</code>。网页不接收 API Key。未审核的草稿不会自动进入正式人物库。</p>
         <p class="hint">官方 Open Peeps 原始作品声明为 CC0，但目前导入的文件实际来自第三方公开镜像，未与官方完整下载包逐文件比对。请继续保留来源信息。</p>
       </aside>
 

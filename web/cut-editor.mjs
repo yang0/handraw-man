@@ -6,12 +6,12 @@ import {
 
 const $ = id => document.getElementById(id);
 const state = {
-  manifest: null, source: null, crop: null, anchors: {},
+  manifest: null, aiManifest: {records:[]}, source: null, crop: null, anchors: {},
   mode: "crop", tab: "cut", drag: null, revisions: [],
   previous: [], currentPart: null, parts: [], selected: null,
   compositionDrag: null, busy: false
 };
-const MAX_FILE_BYTES = 20 * 1024 * 1024;
+const MAX_FILE_BYTES = 32 * 1024 * 1024;
 const MAX_PIXELS = 16_000_000;
 
 function status(text, error = false) {
@@ -53,12 +53,37 @@ function safeAssetUrl(asset) {
   return "./" + path.split("/").map(encodeURIComponent).join("/");
 }
 function listSourceAssets() {
+  if ($("sourceCategory").value === "ai-drafts") return state.aiManifest.records;
   return state.manifest?.assets.filter(a => a.category === $("sourceCategory").value) || [];
 }
 function setSourceOptions() {
+  const isAi = $("sourceCategory").value === "ai-drafts";
   const assets = listSourceAssets();
-  selectOptions($("sourceSelect"), assets.map(a => ({value:a.id,label:a.originalFile.split("/").pop().replace(/\.svg$/,"")})));
+  selectOptions($("sourceSelect"), assets.map(a => ({
+    value: a.id,
+    label: isAi ? a.id + " · " + a.family : a.originalFile.split("/").pop().replace(/\.svg$/, "")
+  })));
   $("sourceSelect").disabled = !assets.length;
+  $("openSource").disabled = !assets.length;
+  $("openSource").textContent = isAi ? "加载 AI 原图（未审核）" : "加载选中原件";
+}
+async function fetchAiManifest() {
+  const response = await fetch("./assets/sources/ai/drafts/index.json", { cache: "no-store" });
+  if (response.status === 404) { state.aiManifest = {records:[]};return; }
+  if (!response.ok) throw Error("加载本地 AI 草稿清单失败 HTTP " + response.status);
+  const data = await response.json();
+  if (data.schemaVersion !== 1 || !Array.isArray(data.records)) throw Error("AI 草稿索引格式错误");
+  const seen = new Set();
+  for (const item of data.records) {
+    if (!/^[A-Za-z0-9_-]{8,130}$/.test(item.id || "") ||
+        !/^[A-Za-z0-9_-]+\.(?:png|jpg|webp)$/.test(item.filename || "") ||
+        !/^[A-Za-z0-9_-]+\.json$/.test(item.metadataFilename || "") ||
+        !/^sha256:[a-f0-9]{64}$/.test(item.originalHash || "") || seen.has(item.id)) {
+      throw Error("AI 草稿清单包含无效或重复文件名");
+    }
+    seen.add(item.id);
+  }
+  state.aiManifest=data;
 }
 async function fetchManifest() {
   const response = await fetch("./assets/sources/open-peeps/manifest.json");
@@ -92,6 +117,8 @@ async function initializeSource(blob, name, details) {
     const width = image.naturalWidth, height = image.naturalHeight;
     if (!width || !height || width * height > 32_000_000) throw Error("图片尺寸无效或超过 3200 万像素");
     const digest = await sha256(blob);
+    if (details.expectedSha256 && digest !== details.expectedSha256)
+      throw Error("AI 原图 SHA-256 与生成记录不一致，拒绝导入");
     if (state.source?.url) URL.revokeObjectURL(state.source.url);
     state.source = {url, image, blob, name, width, height, sha256:digest, ...details};
     state.crop = defaultCrop(width, height);
@@ -106,7 +133,7 @@ async function initializeSource(blob, name, details) {
     $("partCategory").value = details.suggestedCategory || "other";
     $("sourceInfo").textContent = [name, width + " × " + height + " px",
       "源图 SHA-256: " + digest.slice(0,20) + "…",
-      details.assetId ? "Open Peeps: " + details.assetId : "用户上传：未核验授权"]
+      details.sourceKind === "ai-generated" ? "AI 草稿 · 请求模型：" + (details.generation?.requestedModel || "unknown") + "（未审核）" : details.assetId ? "Open Peeps: " + details.assetId : "用户上传：未核验授权"]
       .join("\n");
     $("sourceInfo").style.whiteSpace="pre-line";
     resizeStage();
@@ -122,6 +149,29 @@ async function initializeSource(blob, name, details) {
   } catch(e) { URL.revokeObjectURL(url); throw e; }
 }
 async function openMirrorAsset() {
+  if ($("sourceCategory").value === "ai-drafts") {
+    const item=state.aiManifest.records.find(a=>a.id===$("sourceSelect").value);
+    if(!item)throw Error("本地没有可用 AI 草稿，请先运行生成命令");
+    const prefix="./assets/sources/ai/drafts/";
+    const [photoResponse,metadataResponse]=await Promise.all([
+      fetch(prefix+encodeURIComponent(item.filename)),fetch(prefix+encodeURIComponent(item.metadataFilename))
+    ]);
+    if(!photoResponse.ok||!metadataResponse.ok)throw Error("AI 草稿文件不完整，请检查原图与元数据");
+    const record=await metadataResponse.json();
+    if(record.id!==item.id||record.originalHash!==item.originalHash||
+       record.sourceKind!=="ai-generated"||record.reviewStatus!=="draft" ||
+       !record.generation || record.generation.requestedModel!==item.model)
+      throw Error("AI 草稿元数据与索引不一致，拒绝冒用来源");
+    const blob=await photoResponse.blob();
+    await initializeSource(blob,item.filename,{
+      sourceKind:"ai-generated",assetId:item.id,sourceUrl:null,
+      licenseEvidence:record.licenseEvidence,gitBlobHash:null,
+      expectedSha256:item.originalHash.slice("sha256:".length),
+      generation:record.generation,modelEvidence:record.modelEvidence,
+      suggestedCategory:item.layout==="full-body"?"full-body":"other"
+    });
+    return;
+  }
   const asset = state.manifest?.assets.find(a => a.id === $("sourceSelect").value);
   if (!asset) throw Error("请先选择真实 SVG 原件");
   const response = await fetch(safeAssetUrl(asset));
@@ -525,6 +575,7 @@ async function init() {
   bind();
   try {
     await fetchManifest();
+    await fetchAiManifest();
     await openMirrorAsset();
     renderPartList();updateAssemblyControls();
     status("可用：真实 SVG 裁切 / 锚点标记 / 透明 PNG 导出 / 带哈希来源 JSON / 分层装配。");
