@@ -9,6 +9,7 @@ import {
 
 const $=id=>document.getElementById(id);
 const SOURCE="./assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json";
+const BOARD={width:994,height:1573,originX:300,originY:40};
 const names={head:"头部",torso:"躯干","left-arm":"左手臂","right-arm":"右手臂","left-leg":"左腿","right-leg":"右腿"};
 const state={catalog:null,parts:[],images:new Map(),selected:null,preset:"neutral"};
 function status(message,error=false) {
@@ -44,6 +45,8 @@ function draw() {
   const canvas=$("board"),ctx=canvas.getContext("2d");
   if(!ctx)throw Error("当前浏览器不支持真实 PNG 合成");
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save();
+  ctx.translate(BOARD.originX,BOARD.originY);
   for(const p of state.parts) {
     if(!p.visible)continue;
     const img=state.images.get(p.id);
@@ -56,6 +59,7 @@ function draw() {
     ctx.drawImage(img,t.offsetImageX,t.offsetImageY); // existing source bytes ONLY
     ctx.restore();
   }
+  ctx.restore();
   renderAnchors();
   const neutral=isOriginalPose(state.parts);
   $("composeLabel").textContent=neutral?
@@ -76,8 +80,8 @@ function renderAnchors() {
     const el=document.createElement("span");
     el.className="anchor-dot"+(name===p.pivotAnchor?" active":"");
     el.textContent=name;
-    el.style.left=pos.x/394*100+"%";
-    el.style.top=pos.y/1493*100+"%";
+    el.style.left=(pos.x+BOARD.originX)/BOARD.width*100+"%";
+    el.style.top=(pos.y+BOARD.originY)/BOARD.height*100+"%";
     root.append(el);
   }
 }
