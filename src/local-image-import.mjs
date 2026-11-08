@@ -9,7 +9,7 @@ export function validateImportOptions(o) {
   if (!Object.hasOwn(FAMILIES, o.family)) throw Error("形体家族不合法");
   if (!["full-body","parts-sheet"].includes(o.layout || "full-body")) throw Error("布局不合法");
   if (!["chatgpt-native","other-ai"].includes(o.origin || "chatgpt-native")) throw Error("来源不合法");
-  if (typeof (o.prompt || "") !== "string" || o.prompt.length > 2000) throw Error("提示词过长");
+  if (typeof (o.prompt || "") !== "string" || (o.prompt || "").length > 2000) throw Error("提示词过长");
   return {inputPath:resolve(o.inputPath),family:o.family,layout:o.layout||"full-body",
     origin:o.origin||"chatgpt-native",prompt:o.prompt||"",outputDir:resolve(o.outputDir||"assets/sources/ai/drafts")};
 }
