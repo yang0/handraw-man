@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "batchId": "phase1-fullbody-2026-11-08",
+  "title": "HandRaw Man first complete faceless body morphology candidate",
+  "sourceKind": "ai-generated",
+  "generator": "ChatGPT native image generation",
+  "model": "undisclosed",
+  "formalApprovedCount": 0,
+  "visualGatePassedCount": 1,
+  "assets": [
+    {
+      "id": "bamboo-001",
+      "family": "bamboo",
+      "category": "full-body-shape",
+      "style": "black hand-drawn outline, blank head, transparent background after processing",
+      "source": {
+        "file": "assets/candidates/phase1-fullbody-2026-11-08/sources/bamboo-001-original.png",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "sha256:7455b9a8a5977e968d26b1a06d5f8e882d8472a9f8990f2280a9e34ee5a4ed11",
+        "gitBlobSha1": "92cb05d639778b74fbfaec88ff6a792ce7f575d7",
+        "sizeBytes": 1043794,
+        "generatedImageId": "954864ef-99c5-4579-b2ed-1276ccfa5be6",
+        "modelNameEvidence": "not exposed",
+        "sourceTool": "ChatGPT built-in image generator"
+      },
+      "processed": {
+        "file": "assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png",
+        "format": "png",
+        "width": 394,
+        "height": 1493,
+        "sha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+        "gitBlobSha1": "f681944547fad11a4256a0d06088068c675bca4c",
+        "sizeBytes": 66365,
+        "cropXYXY": [
+          312,
+          26,
+          706,
+          1519
+        ],
+        "method": "luminance-to-opacity on existing pixels, crop around original lines; no new strokes or procedural character geometry",
+        "backgroundOpacityThreshold": 250,
+        "widthPolicy": "retain actual source-line geometry, no contour redraw"
+      },
+      "audit": {
+        "actualSourceAndProcessedFilesPresent": true,
+        "frontView": true,
+        "wholeBodyVisible": true,
+        "blankFace": true,
+        "noClothing": true,
+        "noHair": true,
+        "neutralPose": true,
+        "visibleHandsAndFeet": true,
+        "recognizableBambooSilhouette": true,
+        "armAndLegOcclusionReview": "arms visible, some proximity to torso requires separate-part manual segmentation",
+        "visualGate": "pass",
+        "visualGateReviewedAt": "2026-11-08",
+        "formalApproval": "pending-originality-and-licensing-review",
+        "version": "0.1.0",
+        "reviewStatus": "draft",
+        "phase1Ready": false,
+        "independentSilhouetteCount": 1,
+        "limitations": [
+          "Current file is a complete body silhouette, not independent head/torso/limbs.",
+          "Artistic novelty and distribution terms remain subject to maintainer review.",
+          "No evidence establishing the underlying image-generator model name."
+        ]
+      },
+      "provenance": {
+        "authorCredit": "ChatGPT generated output directed by HandRaw Man project",
+        "derivedFromOpenPeeps": false,
+        "publisherReviewRequired": true,
+        "licenseEvidence": "pending-human-review",
+        "notMixedIntoCC0": true
+      }
+    }
+  ]
+}

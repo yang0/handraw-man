@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HandRaw Man · 全身形体候选库</title>
+<style>
+*{box-sizing:border-box}body{background:#f5f6f2;color:#1f2c23;margin:0;font:14px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft Yahei",sans-serif}
+a{color:#386347;text-decoration:none}a:hover{text-decoration:underline}
+header{background:#fff;border-bottom:1px solid #e1e7de;padding:17px max(20px,4vw);display:flex;justify-content:space-between;align-items:center;gap:18px}
+header strong{font-size:17px}.nav{display:flex;gap:17px;font-size:12px;flex-wrap:wrap}
+main{max-width:1150px;margin:0 auto;padding:42px 24px}
+h1{font-size:30px;letter-spacing:-1px;margin:0}.intro{color:#657567;max-width:850px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:24px 0}
+.kpi{background:#fff;border:1px solid #e1e8df;border-radius:12px;padding:15px 21px;min-width:160px}
+.kpi strong{font-size:25px;display:block}.kpi span{color:#738276;font-size:12px}
+.viewer{background:#fff;border:1px solid #e2e9df;border-radius:17px;padding:24px;display:grid;grid-template-columns:minmax(220px,1fr) 1fr;gap:24px}
+.canvas{min-height:560px;display:flex;justify-content:center;align-items:center;background:repeating-conic-gradient(#ecefe9 0% 25%,#fff 0% 50%) 50%/22px 22px;border-radius:12px;overflow:hidden}
+.canvas img{display:block;max-width:94%;max-height:610px;width:auto;height:auto;object-fit:contain}
+.viewer h2{font-size:24px;margin:0 0 12px}.flag{background:#e9f2e8;color:#2b6740;border-radius:16px;padding:5px 9px;font-size:11px;display:inline-flex}
+.hold{background:#f8eddd;color:#966b37}.details{display:grid;grid-template-columns:130px 1fr;gap:8px 10px;margin:23px 0;color:#536759;font-size:12px}
+.details dt{color:#8b998e}.details dd{margin:0;overflow-wrap:anywhere}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}.buttons button{background:#2f553b;color:#fff;border:0;border-radius:10px;padding:11px 15px;cursor:pointer}.buttons button.secondary{background:#eef3ee;color:#385940}
+.note{background:#f7f8f4;border-left:3px solid #c0ae83;padding:12px 15px;font-size:12px;color:#777160;margin-top:18px;border-radius:6px}
+@media(max-width:720px){main{padding:22px 15px}.viewer{grid-template-columns:1fr}.canvas{min-height:420px}header{align-items:flex-start;flex-direction:column}}
+</style></head>
+<body>
+<header><strong>HandRaw Man · 形体素材审查</strong><div class="nav"><a href="./index.html">Open Peeps 原件</a><a href="./candidates.html">旧头形候选</a><a href="./cut-editor.html">素材切割</a><a href="./docs/PHASE1-BAMBOO-QA-2026-11-08.md">完整审核记录</a></div></header>
+<main>
+<h1>纯人物形体候选库</h1><p class="intro">这里只展示从真实生成图像得到的全身正视人体形体。无五官、无服饰、无固定身份。质量门槛严于普通素材图库：素材通过初步视觉检查，不代表已经正式发布。</p>
+<div class="kpis"><div class="kpi"><strong id="visual">—</strong><span>初步视觉合格</span></div><div class="kpi"><strong id="approved">—</strong><span>正式批准</span></div><div class="kpi"><strong>48</strong><span>计划策展母版</span></div></div>
+<div id="entry" aria-live="polite">正在读取实际素材记录…</div>
+</main>
+<script type="module">
+async function init(){
+ const response=await fetch("./assets/candidates/phase1-fullbody-2026-11-08/manifest.json",{cache:"no-store"});
+ if(!response.ok)throw Error("无法读取真实形体素材清单");
+ const manifest=await response.json();
+ if(!Array.isArray(manifest.assets)||manifest.assets.length!==1||manifest.schemaVersion!==1)throw Error("资产清单格式有误");
+ document.querySelector("#visual").textContent=manifest.visualGatePassedCount;
+ document.querySelector("#approved").textContent=manifest.formalApprovedCount;
+ const a=manifest.assets[0];
+ if(a.audit.reviewStatus!=="draft"||a.audit.phase1Ready!==false)throw Error("正式审核状态异常");
+ const section=document.createElement("section");section.className="viewer";
+ const canvas=document.createElement("div");canvas.className="canvas";
+ const img=document.createElement("img");img.src="./"+a.processed.file;img.alt="真实生图裁切出的无五官竹竿型完整正视人体线稿";canvas.append(img);
+ const details=document.createElement("div");
+ const title=document.createElement("h2");title.textContent=a.id+" · Bamboo / 竹竿型";
+ const mark=document.createElement("span");mark.className="flag";mark.textContent="初步视觉检查：通过";
+ const hold=document.createElement("span");hold.className="flag hold";hold.style.marginLeft="8px";hold.textContent="正式授权与母版审核：待完成";
+ const desc=document.createElement("p");desc.textContent="完整全身、正视、无五官无服饰；高辨识度细长四肢比例。源图与透明件均已完整存储，未使用程序绘制人体。";
+ const dl=document.createElement("dl");dl.className="details";
+ for(const [k,v] of [["来源","ChatGPT 内置生图"],["底层模型","未披露"],["原图尺寸",a.source.width+" × "+a.source.height],["裁切尺寸",a.processed.width+" × "+a.processed.height],["原图 SHA-256",a.source.sha256.slice(0,26)+"…"],["正式母版","尚未批准（draft）"]]){const dt=document.createElement("dt");dt.textContent=k;const dd=document.createElement("dd");dd.textContent=v;dl.append(dt,dd);}
+ const actions=document.createElement("div");actions.className="buttons";
+ const toggle=document.createElement("button");toggle.textContent="查看原始 PNG";let original=false;
+ toggle.onclick=()=>{original=!original;img.src="./"+(original?a.source.file:a.processed.file);toggle.textContent=original?"查看透明 PNG":"查看原始 PNG";};
+ const sourceLink=document.createElement("a");sourceLink.href="./"+a.source.file;sourceLink.textContent="下载完整源图";
+ const processedLink=document.createElement("a");processedLink.href="./"+a.processed.file;processedLink.textContent="下载透明素材";
+ for(const link of [sourceLink,processedLink]){link.download="";link.style.padding="11px 0";link.style.fontSize="12px";}
+ actions.append(toggle,sourceLink,processedLink);
+ const note=document.createElement("p");note.className="note";note.textContent="此素材仅为初步视觉合格的完整人体候选。独立关节部件切割、原创性与许可审批尚未完成，不应统计为正式发布的48个母版之一。";
+ details.append(title,mark,hold,desc,dl,actions,note);section.append(canvas,details);
+ const root=document.querySelector("#entry");root.replaceChildren(section);
+}
+init().catch(e=>{document.querySelector("#entry").textContent="加载失败："+e.message;});
+</script>
+</body></html>
