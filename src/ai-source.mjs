@@ -5,7 +5,7 @@
  */
 import { createHash, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile, rename, open, unlink } from "node:fs/promises";
-import { resolve, join } from "node:path";
+import { resolve, join, relative, isAbsolute } from "node:path";
 
 export const DEFAULT_MODEL = "gpt-image-2.6";
 export const DEFAULT_BASE_URL = "http://127.0.0.1:38650/v1";
@@ -170,10 +170,14 @@ export async function saveGeneratedDraft({result,outputDir,now=new Date(),idSuff
   if(!/^[A-Za-z0-9_-]+$/.test(id))throw Error("草稿 ID 不安全");
   const filename=id+image.extension, metadataFilename=id+".json";
   const imageHash=sha256(result.bytes);
+  const localDir=relative(resolve(process.cwd()),dir).replaceAll("\\","/");
+  const safeRelativeDir=localDir && !isAbsolute(localDir) && !localDir.startsWith("../") && localDir!==".."
+    ? localDir : "";
+  const originalFile=(safeRelativeDir?safeRelativeDir+"/":"")+filename;
   const record={
     schemaVersion:1,id,sourceKind:"ai-generated",reviewStatus:"draft",phase1Ready:false,
     family:result.options.family,layout:result.options.layout,
-    originalFile:"assets/sources/ai/drafts/"+filename,originalHash:"sha256:"+imageHash,
+    originalFile,originalHash:"sha256:"+imageHash,
     format:image.format,mime:image.mime,sizeBytes:result.bytes.length,
     width:image.width,height:image.height,
     modelEvidence:result.providerReportedModel === result.options.model ? "provider-echoed-requested-model"

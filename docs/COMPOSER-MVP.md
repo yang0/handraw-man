@@ -4,7 +4,7 @@
 
 ## 启动
 
-在项目根目录执行 `python3 -m http.server 8000`，然后打开 `http://localhost:8000/`。也可以部署为任意静态站点，不需要数据库或 AI API。
+在项目根目录执行 `python3 -m http.server 8000 --bind 127.0.0.1`，然后打开 `http://localhost:8000/`。也可以部署为任意静态站点，不需要数据库或 AI API。
 
 ## 已交付
 

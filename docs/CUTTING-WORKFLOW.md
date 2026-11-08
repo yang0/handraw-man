@@ -4,7 +4,7 @@
 
 ## 本地运行
 
-在仓库根目录执行 `python3 -m http.server 8000`，浏览器访问 `http://localhost:8000/cut-editor.html`。无需 Node 构建、Docker 或 AI API。
+在仓库根目录执行 `python3 -m http.server 8000 --bind 127.0.0.1`，浏览器访问 `http://localhost:8000/cut-editor.html`。无需 Node 构建、Docker 或 AI API。
 
 ## GPT Image 草稿接入
 

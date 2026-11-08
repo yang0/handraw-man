@@ -43,7 +43,7 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 本项目当前为**纯静态网页**，无需调用 AI 模型、无需 Docker、无需安装前端依赖。
 
 ```bash
-python3 -m http.server 8000
+python3 -m http.server 8000 --bind 127.0.0.1
 # 浏览器打开 http://localhost:8000/
 ```
 

@@ -22,7 +22,7 @@ node scripts/generate-ai-source.mjs --family bamboo --dry-run
 node scripts/generate-ai-source.mjs --family bamboo --brief '头小、肩极窄、长腿柔和，轮廓自然'
 ```
 
-3. 正常成功后得到真实原始图像、元数据 JSON 和索引三个文件；随后运行 `py -m http.server 8000`，访问 `http://localhost:8000/cut-editor.html`。
+3. 正常成功后得到真实原始图像、元数据 JSON 和索引三个文件；随后运行 `py -m http.server 8000 --bind 127.0.0.1`，访问 `http://localhost:8000/cut-editor.html`。
 4. 在左侧素材来源中选择 **AI 草稿（本机生成）** → 选择记录 → 点击加载。可编辑裁切、锚点并下载 PNG/JSON 对。
 
 Linux/macOS 用 `export HANDRAW_IMAGE_API_KEY='...'`、`export HANDRAW_IMAGE_BASE_URL='...'` 代替 PowerShell 赋值。
@@ -64,3 +64,5 @@ node scripts/generate-ai-source.mjs --family wedge --dry-run
 ## 当前验收边界
 
 此阶段代码与模拟接口测试可以在 CI 中验证请求、返回格式、哈希、来源和错误处理。但**没有连接使用者本机实际号池或获得真实模型图像**，不能把 HTTP mock 测试说成真实出图。Issue #9 只有在真实 `gpt-image-2.6` 成功出图、原图归档、裁切并完成视觉质量审查后才能关闭。
+
+> **本地草稿隐私：** 启动静态服务时必须绑定 `127.0.0.1`，不要使用默认的全部网络接口。如果将项目部署到公网，必须排除 `assets/sources/ai/drafts/`，其中可能含未公开人物图片和提示词。`.gitignore` 不会阻止已经生成的本地文件被 HTTP 服务器访问。
