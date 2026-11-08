@@ -1,49 +1,41 @@
-# 开发路线与验收 Roadmap
+# HandRaw Man 路线图 · Asset-First 版本
 
-## 执行规则
+强制适用 [根目录顶级规范](../TOP_LEVEL_RULES.md)，决策 [Issue #12](https://github.com/yang0/handraw-man/issues/12)。之前计划中的程序化 Shape Core / SVG 人物路径 renderer / Bezier 人体生成器 **取消**。
 
-每一个功能先登记 Issue（目标、技术任务、依赖和验收），再改代码；通过测试后关闭 Issue。新增范围必须独立 Issue，不把后续四阶段一口气塞进一个 PR。
+## 团队规则
 
-## Milestone 0：项目基线与基础契约
+**每个开发任务先 Issue，再动代码**；遵守 TOP_LEVEL_RULES.md 与 AGENTS.md。代码/文件、测试、真实图片和来源证明齐备之后才能关闭 Issue。
 
-- Repo 文档、技术架构、贡献与版权策略；npm/TypeScript 工程骨架、CI。
-- 独立可运行的 Shape Core：类型、安全校验、确定性 renderSVG。
-- 代表性形体家族的真实示例与自动化测试。
-- 交付可复用 npm SDK，而不是只放效果图片。
+## M0：创作规范和素材生产基础
 
-## Milestone 1：Shape Gallery 与 48 个原生母版
+1. #12 顶级规则、文档冲突修正（本阶段）。
+2. #1 TypeScript 资产流水线工程与 CI。
+3. #2 asset manifest、来源授权、组合配方与验证。
+4. #3 真实 Open Peeps CC0 资产导入与素材组合最小可运行样板（**不画人体**）。
 
-- 12 家族，每家族 4 个经人工审阅的**独立设计**。
-- 锚点、Bezier 曲线、可控比例形变和自交/画布边界检查。
-- 正视图库 + 筛选、母版对比、参数实时调节、SVG/PNG/JSON 导出。
-- 无五官、服饰、职业、年龄、名字或性格。
+**验收：** 能在本地打开真实来源角色素材、读取 metadata、组合并展示；并能证明未通过算法画人物。没有拿到原始素材就如实标示 blocked，不使用假画的占位人。
 
-## Milestone 2：Global Appearance
+## M1：形体母库与切割编辑
 
-- 可选多元五官、头发与肤色；独立服饰/配饰素材扩展。
-- 文化不绑人体、地域不可直接推断族裔、明确来源与授权记录。
-- 同一形体可匹配所有外观素材。
+5. #4 12 家族/48 高质量实际母版策展；Open Peeps 与 AI 来源明确分开。
+6. #5 分切/透明化/锚点标注/变换对齐和人工修补工具（不造身体曲线）。
+7. #6 可交互素材画廊与分层组合工作台。
+8. #7 原生 SVG/透明 PNG/组合工程 JSON 导出。
+9. #11 授权记录与社区贡献规范。
 
-## Milestone 3：AI Native Design
+**验收：** 实际图像入库，经切割后仍可装配，全身正面完整；导出组合不遗漏来源，48 张为质量目标而不是算法指标。
 
-- Prompt -> 合法 Recipe，支持形体锁定、定向变体、批量。
-- 审核后发布新素材、可复现版本管理、AI 失败可解释。
-- 对接 HandRaw Web / HandRaw Style。
+## M2：全球外观与 AI 补齐素材
 
-## Milestone 4：Open Ecosystem
+10. #8 全球多元外观资产包（与一期纯形体解耦）。
+11. #9 `gpt-image-2.6` 创作及真实图像产物留档/切割/校验流水线。
 
-- API、CLI、插件与社区扩展、贡献审查、国际化、对外文档。
+**验收：** 无素材时可显式触发模型生成，成功后才创建真实资产；无模型权限明确报错，不运行代码画人兜底。
 
-## 首批 Issue 建议顺序
+## M3：HandRaw 生态
 
-1. P0 工程骨架、TypeScript、测试、CI。
-2. P0 JSON Recipe / prototype schema 与严格参数校验。
-3. P0 SVG 正视形体 renderer + 首批真实示例。
-4. P1 12 家族 / 48 母版的原创设计与审查。
-5. P1 参数变形与锚点/关节约束。
-6. P1 画廊、工作台与批量导出。
-7. P2 全球多元外观模块。
-8. P2 AI 受控配方规划。
-9. P2 HandRaw Web / Skill 集成。
+12. #10 HandRaw Web / Skill SDK 集成；确保组合配方与素材版本跨端复现。
 
-每个 Issue 以实际 code/tests/截图/CI 结果为验收证据，禁止将未实现目标标记为已完成。
+## 不做
+
+❌ 程序化人体 SVG renderer、Bezier 随机造人、Canvas 图形绘制头身四肢、3D 几何白模、把 Open Peeps 改称 HandRaw 自有原创。

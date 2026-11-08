@@ -1,54 +1,49 @@
-# 原创形体与素材规范（Asset Specification）
+# 素材资产标准（v1.1）
 
-## 1. Phase 1 统一呈现
+**此文档受 [TOP_LEVEL_RULES.md](../TOP_LEVEL_RULES.md) 约束。禁止使用程序画人物。**
 
-- 正视、全身、自然中立站姿，白底黑色手绘线稿，人物无服饰、无脸部五官、无道具。
-- 竖向规范 viewBox `0 0 512 768`；留边，脚底同一基准线；纯 SVG 可独立预览。
-- 线条优先自然松弛、轻微手绘感，但闭合、平顺、连接准确；不采用写实灰模、解剖图、低多边形 3D。
-- 轮廓是第一视觉信息；同一家族的四个正式母版必须在静态剪影测试里显示真实设计差异。
-- Phase 1 素材必须能不依赖“角色身份”独立存在。
+## 一期成品规范
 
-## 2. 数据与命名
+- 人物全身、正视、自然中立站姿、白底、黑色手绘线稿；不含职业、姓名、年龄设定、服装、外观标签、故事。
+- 母版优先来自合法可复用真实插画 SVG/PNG；不足时由 `gpt-image-2.6` 生图并切割。
+- 可存放原生 SVG、透明 PNG 或对真实图片矢量追踪的 SVG。不得用 TypeScript/Python 手写曲线或硬编码 SVG path 创作人体。
+- 推荐逻辑画布 512×768，素材可独立保存原始分辨率与局部边界。不要为了迎合固定尺寸重新程序画人体。
+- 提供自然、不重复的形体线条；视觉创作由真实素材提供，非随机几何效果。
 
-- ID 使用英文 kebab-case，例如 `bamboo-a`, `pear-c`。
-- 每件素材必须标记：`id`、`family`、`version`、`author`、`licenseStatus`、`origin`（human / assisted）、`sourceNotes`、`reviewStatus`。
-- `licenseStatus` 只能是 draft / cleared / blocked；未 cleared 不进入公开可下载素材包。
-- 结构部件：`head`、`neck`、`torso`、`leftArm`、`rightArm`、`leftLeg`、`rightLeg`；关节锚点必须可被测试。
-- 外观/服饰/文化标记不得进入一期母版表。
+## 资产类别
 
-## 3. 形体参数约束（初始范围，调整需评审）
+`full-body`, `head`, `neck`, `torso`, `left-arm`, `right-arm`, `left-leg`, `right-leg`, `hand`, `foot`, `face`, `hair`, `outfit`, `accessory`。
 
-| 参数 | 示例范围 | 含义 |
-|---|---:|---|
-| headToBodyRatio | 2.5–10 | 人物整体头身比例 |
-| headWidthScale | 0.6–2.0 | 头部宽度比例 |
-| neckLengthScale | 0.5–2.0 | 颈部比例 |
-| shoulderScale | 0.45–2.0 | 肩宽 |
-| torsoWidthScale | 0.5–2.0 | 躯干宽度 |
-| torsoLengthScale | 0.6–1.6 | 躯干长度 |
-| armLengthScale | 0.65–1.65 | 上肢长度 |
-| legLengthScale | 0.65–1.85 | 下肢长度 |
-| limbThicknessScale | 0.45–2.0 | 四肢厚度 |
-| lineWidth | 1.5–6 | 黑色线条粗细 |
+- 一期仅用 `full-body` 和形体构成所需部件。
+- 源素材不一定能无损拆分所有部件；不强制人为地把完整人物切成无用残片。
+- 使用归一化锚点（0..1 坐标）注明 neck/shoulder/elbow/wrist/hip/knee/ankle 等连接点，**锚点只用于放置已有素材**。
 
-参数不能任意叠加导致严重碰撞；极端组合要报错或由约束求解器合理调整并记录调整结果。范围是产品目标，不意味着第一版简单 renderer 已全部支持。
+## 素材来源（必填）
 
-## 4. 视觉质量评估
+每个资产 manifest 需有：
 
-- 正视判断：左右肩、骨盆、足底方向一致，不能意外出现 3/4 侧视。
-- 整体轮廓：以缩略图尺寸看也能辨别家族形体。
-- 关节连续性：四肢应连续接入肩/骨盆，不能漂浮。
-- 边界与接地：不越界；双脚处于脚底基线附近，特殊非对称个例需有合理规则。
-- 线条：主线宽统一、局部曲率自然、无多余内线、无透明重影。
-- 原创性：不直接描摹既有角色或 Open Peeps 具体人物。
-- 风格一致性：原生素材通过设计审核，而非完全依赖 AI 打分。
+| 字段 | 说明 |
+|---|---|
+| id、version、category、family | 唯一 ID、版本、角色部件与形体家族 |
+| sourceKind | open-peeps-cc0 / ai-generated / user-authored 等 |
+| sourceUrl 或 generation | 上游原始资源地址，或模型/提示词元数据 |
+| originalFile / originalHash | 未修改原图及文件 hash |
+| processedFile / processedHash | 经过裁切/抠图的真实部件 |
+| licenseEvidence、reviewStatus | 许可核验与人工审查状态 |
+| bounds、anchors、layerHints | 尺寸、连结位置、遮挡建议 |
 
-## 5. 新素材入库
+未经真实文件、来源及授权审核的空壳记录不得标记为可发布。
 
-1. 申请记录设计意图与原创来源。
-2. 生成或手绘 SVG 草稿，补充锚点与语义层。
-3. 自动运行 SVG/几何/授权字段校验。
-4. 人工进行视觉质量、原创性、文化敏感性审查。
-5. 进入版本化 catalog，并生成标准预览缩略图和回归样例。
+## 48 母版的验收
 
-全球外观包新增具体文化服饰时需补充来源记录和来自该文化背景的合理审阅流程；不借人体形体参数推断族裔或国籍。
+- 12 类形体家族 × 4 个目标，每件是**实在的完整素材**，可以来自已授权复用或 GPT Image 生成；要明确标注“复用/衍生/AI”。
+- “原创形体”仅用在真正独立创作的资产上，Open Peeps 复用件保留原始作者归属和 CC0 说明。
+- 相似素材不能仅改缩放或随机参数后重复计数；需有独立视觉价值。
+- 人工评审正面视角、轮廓、关节连接、线条风格、边界、PNG 透明边缘、文化准确性。
+- 任何图片不得用程序化 path 人体生成器顶替。
+
+## 输出与测试
+
+- 原图、裁切图、元数据、组合工程 JSON；有源 SVG 才能导出纯矢量 SVG，否则可选择将位图嵌入 SVG 或导出 PNG。
+- 无损与有损格式区别在 UI 中明确说明，不把 PNG 封装 SVG 称为“真正可编辑矢量”。
+- 使用真实图片的回归预览/导出测试，抽查人工视觉结果。
