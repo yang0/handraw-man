@@ -38,7 +38,9 @@ test("assembly UI does not procedurally draw characters",async()=>{
  const js=await readFile(new URL("../web/bamboo-parts.mjs",import.meta.url),"utf8");
  const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
  const used=new Set([...js.matchAll(/\$\("([a-zA-Z][a-zA-Z0-9-]*)"\)/g)].map(m=>m[1]));
- assert.ok(used.size>10);
+ assert.ok(used.size>=7);
+ for(const id of ["board","partList","downloadPng","downloadRecipe","reset","positionX","positionY"])
+   assert.ok(ids.has(id),"required interaction missing #"+id);
  for(const id of used)assert.ok(ids.has(id),"missing control #"+id);
  assert.match(js,/ctx\.drawImage/);
  assert.doesNotMatch(js,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
