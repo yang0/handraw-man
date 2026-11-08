@@ -76,7 +76,7 @@ function track(reason) {
   if (!state.crop) return;
   state.previous.push(currentSnapshot(reason));
   if (state.previous.length > 30) state.previous.shift();
-  state.revisions.push({reason, timestamp:new Date().toISOString()});
+  state.revisions.push(currentSnapshot(reason));
   if (state.revisions.length > 100) state.revisions.shift();
 }
 function edited() {
@@ -154,6 +154,8 @@ function updateCropOutline() {
   el.style.width = width/src.width*100 + "%";
   el.style.height = height/src.height*100 + "%";
   $("cropSummary").textContent = "裁切 " + width + " × " + height + " px · 起点 ("+x+", "+y+")";
+  $("cropX").value = x; $("cropY").value = y;
+  $("cropWidth").value = width; $("cropHeight").value = height;
 }
 function updateAnchors() {
   const layer=$("anchorMarkers");layer.replaceChildren();
@@ -169,6 +171,9 @@ function updateAnchors() {
     summary.push(name+" = ("+pt.x+", "+pt.y+")");
   }
   $("anchorList").textContent=summary.length?summary.join(" · "):"暂无已标记锚点；选择锚点模式并点击选区内位置。";
+  const current=state.anchors[$("anchorName").value];
+  $("anchorX").value=current?current.x:"";
+  $("anchorY").value=current?current.y:"";
 }
 function changeMode(mode) {
   state.mode=mode;
@@ -408,6 +413,30 @@ function bind() {
   $("cropMode").addEventListener("click",()=>changeMode("crop"));
   $("anchorMode").addEventListener("click",()=>changeMode("anchor"));
   $("anchorName").addEventListener("change",updateAnchors);
+  $("applyCrop").addEventListener("click", async()=>{
+    if(!state.source)return fail(Error("尚未加载源图"));
+    try{
+      const crop=clampCrop({
+        x:Number($("cropX").value),y:Number($("cropY").value),
+        width:Number($("cropWidth").value),height:Number($("cropHeight").value)
+      },state.source.width,state.source.height);
+      track("set-crop-numerically");
+      state.crop=crop;state.anchors={};edited();
+      updateCropOutline();updateAnchors();await drawPreview();
+      status("精确裁切区域已应用，原锚点已清空。");
+    }catch(e){fail(e);updateCropOutline();}
+  });
+  $("applyAnchor").addEventListener("click",()=>{
+    if(!state.source)return fail(Error("尚未加载源图"));
+    try{
+      if($("anchorX").value===""||$("anchorY").value==="")throw Error("请输入 0–1 的锚点 X/Y 坐标");
+      const x=Number($("anchorX").value),y=Number($("anchorY").value);
+      assertAnchors({[$("anchorName").value]:{x,y}});
+      track("set-anchor-numerically-"+$("anchorName").value);
+      state.anchors[$("anchorName").value]={x,y};edited();updateAnchors();
+      status("精确锚点已应用。");
+    }catch(e){fail(e);}
+  });
   $("stage").addEventListener("pointerdown",onStageDown);
   $("stage").addEventListener("pointermove",onStageMove);
   $("stage").addEventListener("pointerup",e=>onStageUp(e).catch(fail));

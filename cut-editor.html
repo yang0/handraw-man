@@ -52,6 +52,12 @@
           <p class="placeholder" id="stagePlaceholder">请加载素材</p>
         </div>
         <div class="stage-footer"><span id="cropSummary">尚未框选</span><span>拖动裁切 · 锚点以选区局部 0..1 坐标保存</span></div>
+        <details class="fine-adjust"><summary>精确设置裁切坐标（像素）</summary><div class="numeric-grid">
+          <label>X <input type="number" id="cropX" step="1" min="0"></label>
+          <label>Y <input type="number" id="cropY" step="1" min="0"></label>
+          <label>宽度 <input type="number" id="cropWidth" step="1" min="8"></label>
+          <label>高度 <input type="number" id="cropHeight" step="1" min="8"></label>
+        </div><button id="applyCrop" class="secondary" type="button">应用精确坐标</button></details>
         <div class="result-section">
           <div><h3>处理结果预览</h3><p>透明棋盘背景仅用于检查；导出文件不带棋盘格。</p></div>
           <div class="result-preview"><canvas id="resultCanvas" aria-label="实际裁切后的像素预览"></canvas></div>
@@ -84,6 +90,8 @@
           <option value="ankleL">左踝</option><option value="ankleR">右踝</option>
           <option value="ground">接地</option>
         </select>
+        <div class="numeric-grid"><label>锚点 X（0–1）<input id="anchorX" type="number" min="0" max="1" step="0.001" placeholder="0.500"></label><label>锚点 Y（0–1）<input id="anchorY" type="number" min="0" max="1" step="0.001" placeholder="0.900"></label></div>
+        <button id="applyAnchor" class="secondary" type="button">应用精确锚点</button>
         <button id="clearAnchor" class="secondary" type="button">删除当前锚点</button>
         <div class="anchor-list" id="anchorList">暂无已标记锚点</div>
         <label for="zIndex">图层顺序 zIndex</label><input type="number" id="zIndex" min="-100" max="100" step="1" value="0">
