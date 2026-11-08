@@ -1,145 +1,231 @@
 /**
- * Bamboo-001 draft composition viewer.
- * It draws ONLY already generated PNGs via drawImage; no lines, paths,
- * geometric human silhouettes, face reconstruction, or new body pixels.
+ * Joint QA viewer for REAL Bamboo-001 PNG cutouts.
+ * Never draws human geometry. Only place/rotate/scale pre-existing image pixels.
  */
-const $ = id=>document.getElementById(id);
-const SOURCE_PATH="./assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json";
-const state={catalog:null,parts:[],selected:null,images:new Map()};
+import {
+  chooseDefaultPivot,neutralPart,validateTransform,imageTransform,anchorPlacement,
+  isOriginalPose,posePreset,exportPoseRecipe,validateImportedPose,buildJointQARecord
+} from "./part-transform.mjs";
+
+const $=id=>document.getElementById(id);
+const SOURCE="./assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json";
 const names={head:"头部",torso:"躯干","left-arm":"左手臂","right-arm":"右手臂","left-leg":"左腿","right-leg":"右腿"};
-function status(message,error=false){
+const state={catalog:null,parts:[],images:new Map(),selected:null,preset:"neutral"};
+function status(message,error=false) {
   $("status").textContent=message;
-  $("status").style.color=error?"#ab3737":"#56775b";
+  $("status").style.color=error?"#a23c38":"#52775c";
 }
-async function loadImage(path){
-  return new Promise((resolve,reject)=>{
-    const img=new Image();
-    img.onload=()=>resolve(img);
-    img.onerror=()=>reject(Error("真实部件加载失败: "+path));
-    img.src="./"+path;
+function sourceUrl(file) {
+  if(!/^assets\/candidates\/phase1-fullbody-2026-11-08\/parts\/bamboo-001\/[a-z-]+\.png$/.test(file))
+    throw Error("素材路径不在已审核来源目录");
+  return "./"+file;
+}
+async function loadImage(file) {
+  return await new Promise((resolve,reject)=>{
+    const image=new Image();
+    image.onload=()=>resolve(image);
+    image.onerror=()=>reject(Error("真实 PNG 加载失败："+file));
+    image.src=sourceUrl(file);
   });
 }
-function filenameOf(part){return part.file.split("/").at(-1);}
-function selected(){return state.parts.find(p=>p.id===state.selected);}
-function draw(){
+function selectedPart() { return state.parts.find(p=>p.id===state.selected)||null; }
+function draw() {
   const canvas=$("board"),ctx=canvas.getContext("2d");
-  if(!ctx)throw Error("当前浏览器无法处理 PNG 预览");
+  if(!ctx)throw Error("当前浏览器不支持真实 PNG 合成");
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(const part of state.parts){
-    if(!part.visible)continue;
-    const [x,y]=part.sourceBoundsXYXY;
-    const img=state.images.get(part.id);
-    if(img)ctx.drawImage(img,x+part.offsetX,y+part.offsetY);
+  for(const p of state.parts) {
+    if(!p.visible)continue;
+    const img=state.images.get(p.id);
+    if(!img)continue;
+    const t=imageTransform(p);
+    ctx.save();
+    ctx.translate(t.translateX,t.translateY);
+    ctx.rotate(t.rotationRadians);
+    ctx.scale(t.scale,t.scale);
+    ctx.drawImage(img,t.offsetImageX,t.offsetImageY); // existing source bytes ONLY
+    ctx.restore();
   }
-  const moved=state.parts.filter(p=>p.offsetX||p.offsetY);
-  $("composeLabel").textContent=moved.length?
-    "已有 "+moved.length+" 个部件被移动；关节切口可能出现断裂":
-    "全部原位 · 像素级重组已通过离线检查";
+  renderAnchors();
+  const neutral=isOriginalPose(state.parts);
+  $("composeLabel").textContent=neutral?
+    "原始中立姿态 · 六张真实 PNG 原位合成" :
+    "活动姿态试验 · 未经过关节视觉审查，禁止发布";
+  $("poseQuality").textContent=neutral?
+    "原位回拼已通过离线像素一致性检查" :
+    "接缝待修复：这只是已有 PNG 的变换预览";
+  $("poseQuality").classList.toggle("risk",!neutral);
 }
-function updateControls(){
-  const part=selected();
-  $("selectedLabel").textContent=part?part.id+" · "+part.width+" × "+part.height:"未选中";
-  for(const axis of ["X","Y"]){
-    const control=$("position"+axis);
-    control.disabled=!part;
-    control.value=part?part["offset"+axis]:0;
-    $("value"+axis).value=control.value;
+function renderAnchors() {
+  const root=$("anchorOverlay");root.replaceChildren();
+  if(!$("showAnchors").checked)return;
+  const p=selectedPart();
+  if(!p)return;
+  for(const [name] of Object.entries(p.anchors)){
+    const pos=anchorPlacement(p,name);
+    const el=document.createElement("span");
+    el.className="anchor-dot"+(name===p.pivotAnchor?" active":"");
+    el.textContent=name;
+    el.style.left=pos.x/394*100+"%";
+    el.style.top=pos.y/1493*100+"%";
+    root.append(el);
   }
-  $("zeroSelected").disabled=!part;
 }
-function renderList(){
+function renderList() {
   const root=$("partList");root.replaceChildren();
-  for(const part of state.parts){
-    const row=document.createElement("div");row.className="part"+(part.id===state.selected?" selected":"");
-    const box=document.createElement("input");box.type="checkbox";box.checked=part.visible;
-    box.setAttribute("aria-label","显示"+names[part.category]);
-    box.addEventListener("change",()=>{part.visible=box.checked;draw();});
-    const image=document.createElement("img");image.src="./"+part.file;image.alt="";
-    const details=document.createElement("div");details.className="info";
-    const btn=document.createElement("button");btn.className="choose";
-    btn.textContent=names[part.category]||part.category;
-    btn.type="button";
-    btn.addEventListener("click",()=>{state.selected=part.id;renderList();updateControls();});
-    const caption=document.createElement("small");caption.textContent=part.width+" × "+part.height+" · Draft";
-    details.append(btn,caption);row.append(box,image,details);root.append(row);
+  for(const p of state.parts){
+    const row=document.createElement("div");
+    row.className="part"+(p.id===state.selected?" selected":"");
+    const visible=document.createElement("input");visible.type="checkbox";visible.checked=p.visible;
+    visible.setAttribute("aria-label","显示"+names[p.category]);
+    visible.addEventListener("change",()=>{
+      p.visible=visible.checked;setCustom();draw();
+    });
+    const img=document.createElement("img");img.src=sourceUrl(p.file);img.alt="";
+    const content=document.createElement("div");content.className="info";
+    const button=document.createElement("button");button.type="button";button.className="choose";
+    button.textContent=names[p.category]||p.category;
+    button.addEventListener("click",()=>{
+      state.selected=p.id;renderList();updateControls();draw();
+    });
+    const detail=document.createElement("small");
+    detail.textContent=p.width+"×"+p.height+" · "+p.pivotAnchor+" · 未审";
+    content.append(button,detail);row.append(visible,img,content);root.append(row);
   }
 }
-function blobSave(blob,name){
-  const href=URL.createObjectURL(blob),anchor=document.createElement("a");
-  anchor.href=href;anchor.download=name;
-  document.body.append(anchor);anchor.click();anchor.remove();
-  setTimeout(()=>URL.revokeObjectURL(href),4000);
+function updateControls() {
+  const p=selectedPart();
+  $("selectedLabel").textContent=p?names[p.category]+" · "+p.width+"×"+p.height+" · Draft":"尚未选择部件";
+  for(const [id,value] of [
+    ["positionX",p?.offsetX??0],["positionY",p?.offsetY??0],
+    ["rotation",p?.rotation??0],["scale",Math.round((p?.scale??1)*100)]
+  ]){
+    $(id).disabled=!p;$(id).value=value;
+  }
+  $("valueX").value=p?.offsetX??0;
+  $("valueY").value=p?.offsetY??0;
+  $("valueRotation").value=(p?.rotation??0)+"°";
+  $("valueScale").value=Math.round((p?.scale??1)*100)+"%";
+  const pivot=$("pivotAnchor");pivot.replaceChildren();
+  if(p){
+    for(const name of Object.keys(p.anchors)){
+      pivot.add(new Option(name+" · 源图 ("+p.anchors[name].sourceX+", "+p.anchors[name].sourceY+")",name));
+    }
+    pivot.value=p.pivotAnchor;
+  }
+  pivot.disabled=!p;
+  $("zeroSelected").disabled=!p;
 }
-function recipe(){
-  if(!state.catalog)throw Error("缺少真实素材清单");
-  return {
-    schemaVersion:1,kind:"bamboo-001-actual-pixel-assembly",
-    sourceSha256:state.catalog.source.sha256,
-    reviewStatus:"draft",phase1Ready:false,
-    actualImageFiles:state.parts.map(p=>({
-      id:p.id,file:p.file,sha256:p.sha256,
-      sourceBoundsXYXY:p.sourceBoundsXYXY,
-      offset:{x:p.offsetX,y:p.offsetY},
-      visible:p.visible,
-      anchors:p.anchors
-    }))
-  };
+function setCustom(){
+  state.preset="custom";
+  $("posePreset").value="custom";
+}
+function showPreset(name) {
+  state.parts=posePreset(state.parts,name);
+  state.preset=name;
+  $("posePreset").value=name;
+  draw();renderList();updateControls();
+  status(name==="neutral"?"已恢复真实原位重组":"已加载模拟姿态；请检查关节缺口，不代表已经修复");
+}
+function saveBlob(blob,filename){
+  const url=URL.createObjectURL(blob),link=document.createElement("a");
+  link.href=url;link.download=filename;
+  document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+}
+function saveJSON(obj,filename){
+  saveBlob(new Blob([JSON.stringify(obj,null,2)+"\n"],{type:"application/json"}),filename);
+}
+function applyControl(control,key,convert=x=>Number(x)){
+  $(control).addEventListener("input",e=>{
+    const p=selectedPart();if(!p)return;
+    const v=convert(e.target.value);
+    const backup=p[key];
+    p[key]=v;
+    try{validateTransform(p);}
+    catch(error){p[key]=backup;status(error.message,true);return;}
+    setCustom();updateControls();draw();
+  });
 }
 function bind(){
-  $("reset").addEventListener("click",()=>{
-    for(const p of state.parts){p.offsetX=0;p.offsetY=0;p.visible=true;}
-    draw();renderList();updateControls();status("已恢复所有真实部件的原始像素坐标");
-  });
+  $("reset").addEventListener("click",()=>showPreset("neutral"));
   $("zeroSelected").addEventListener("click",()=>{
-    const p=selected();if(!p)return;
-    p.offsetX=p.offsetY=0;draw();updateControls();
+    const p=selectedPart();if(!p)return;
+    Object.assign(p,{offsetX:0,offsetY:0,rotation:0,scale:1,pivotAnchor:chooseDefaultPivot(p)});
+    setCustom();updateControls();renderList();draw();
   });
-  for(const axis of ["X","Y"]){
-    $("position"+axis).addEventListener("input",e=>{
-      const p=selected();if(!p)return;
-      p["offset"+axis]=Number(e.target.value);
-      $("value"+axis).value=e.target.value;draw();
-    });
-  }
+  applyControl("positionX","offsetX");
+  applyControl("positionY","offsetY");
+  applyControl("rotation","rotation");
+  applyControl("scale","scale",v=>Number(v)/100);
+  $("pivotAnchor").addEventListener("change",e=>{
+    const p=selectedPart();if(!p)return;
+    const old=p.pivotAnchor;p.pivotAnchor=e.target.value;
+    try{validateTransform(p);}catch(error){p.pivotAnchor=old;return status(error.message,true);}
+    setCustom();renderList();draw();
+  });
+  $("showAnchors").addEventListener("change",renderAnchors);
+  $("applyPreset").addEventListener("click",()=>{
+    const name=$("posePreset").value;
+    if(name==="custom")return status("当前为自定义姿态，不能重新应用此选项",true);
+    try{showPreset(name);}catch(error){status(error.message,true);}
+  });
   $("downloadRecipe").addEventListener("click",()=>{
+    try{saveJSON(exportPoseRecipe(state.parts,state.catalog),"bamboo-001-joint-recipe.json");}
+    catch(error){status(error.message,true);}
+  });
+  $("importRecipe").addEventListener("click",()=>$("recipeFile").click());
+  $("recipeFile").addEventListener("change",async e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    try {
+      if(file.size>100000)throw Error("配方文件超过100KB");
+      const json=JSON.parse(await file.text());
+      state.parts=validateImportedPose(json,state.catalog);
+      state.selected=state.parts[0].id;
+      setCustom();renderList();updateControls();draw();
+      status("已按真实 PNG 哈希校验并恢复六个部件的姿态；仍为未批准草稿");
+    }catch(error){status("导入失败："+error.message,true);}
+    finally{e.target.value="";}
+  });
+  $("downloadQA").addEventListener("click",()=>{
     try{
-      const content=JSON.stringify(recipe(),null,2)+"\n";
-      blobSave(new Blob([content],{type:"application/json"}),"bamboo-001-parts-recipe.json");
-    }catch(e){status(e.message,true);}
+      const report=buildJointQARecord(state.parts,state.catalog,{
+        defect:$("qaDefect").value,notes:$("qaNotes").value
+      });
+      saveJSON(report,"bamboo-001-joint-defect-report.json");
+      status("接缝审查记录已导出：本批部件仍为 Draft，不能作为已修复素材发布");
+    }catch(error){status(error.message,true);}
   });
   $("downloadPng").addEventListener("click",()=>{
     try{
-      if(!state.catalog)throw Error("素材尚未载入");
-      draw();$("board").toBlob(blob=>{
-        if(!blob)return status("PNG 编码失败",true);
-        blobSave(blob,"bamboo-001-parts-composition.png");
+      if(!state.catalog)throw Error("真实素材尚未加载");
+      draw();
+      $("board").toBlob(blob=>{
+        if(!blob)return status("无法导出 PNG",true);
+        saveBlob(blob,"bamboo-001-joint-preview.png");
       },"image/png");
-    }catch(e){status(e.message,true);}
+    }catch(error){status(error.message,true);}
   });
 }
 async function init(){
   bind();
-  const response=await fetch(SOURCE_PATH,{cache:"no-store"});
-  if(!response.ok)throw Error("六个真实部件的清单不存在，请运行素材切割脚本");
+  const response=await fetch(SOURCE,{cache:"no-store"});
+  if(!response.ok)throw Error("真实部件清单不存在");
   const data=await response.json();
   if(data.schemaVersion!==1||data.assetId!=="bamboo-001"||
-     !Array.isArray(data.parts)||data.parts.length!==6||
-     data.reviewStatus!=="draft"||data.phase1Ready!==false){
-    throw Error("素材注册或审核状态异常");
+     data.reviewStatus!=="draft"||data.phase1Ready!==false||
+     !Array.isArray(data.parts)||data.parts.length!==6)throw Error("真实部件审查状态异常");
+  const parts=posePreset(data.parts,"neutral");
+  const loaded=await Promise.all(parts.map(p=>loadImage(p.file)));
+  for(let i=0;i<parts.length;i++){
+    const p=parts[i];
+    if(p.reviewStatus!=="draft"||p.phase1Ready!==false||p.articulatedJoinReviewed!==false)
+      throw Error("发现未经允许发布的关节素材");
+    if(loaded[i].naturalWidth!==p.width||loaded[i].naturalHeight!==p.height)
+      throw Error("真实 PNG 尺寸与来源不符："+p.id);
+    state.images.set(p.id,loaded[i]);
   }
-  state.catalog=data;
-  state.parts=data.parts.map(item=>({...item,offsetX:0,offsetY:0,visible:true}));
-  for(const part of state.parts){
-    if(!/^assets\/candidates\/phase1-fullbody-2026-11-08\/parts\/bamboo-001\/[a-z-]+\.png$/.test(part.file))
-      throw Error("意外的素材文件路径");
-  }
-  const imgs=await Promise.all(state.parts.map(p=>loadImage(p.file)));
-  for(let i=0;i<state.parts.length;i++){
-    if(imgs[i].naturalWidth!==state.parts[i].width||imgs[i].naturalHeight!==state.parts[i].height)
-      throw Error("图片尺寸与真实资产清单不一致: "+state.parts[i].id);
-    state.images.set(state.parts[i].id,imgs[i]);
-  }
-  state.selected=state.parts[0].id;
-  renderList();updateControls();draw();status("6 个 PNG 源像素部件已加载。原位恢复通过；变换后的关节质量仍待审核。");
+  state.catalog=data;state.parts=parts;state.selected=parts[0].id;
+  renderList();updateControls();draw();
+  status("已加载 6 个真实 PNG；所有锚点暂为 estimated-unreviewed，旋转后接缝必须人工检查。");
 }
-init().catch(e=>status("加载失败："+e.message,true));
+init().catch(error=>status("加载失败："+error.message,true));
