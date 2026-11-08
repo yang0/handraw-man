@@ -200,9 +200,12 @@ function bind(){
   });
   $("pivotAnchor").addEventListener("change",e=>{
     const p=selectedPart();if(!p)return;
-    const old=p.pivotAnchor;p.pivotAnchor=e.target.value;
-    try{validateTransform(p);}catch(error){p.pivotAnchor=old;return status(error.message,true);}
-    setCustom();renderList();draw();
+    const old={pivotAnchor:p.pivotAnchor,pivotShiftX:p.pivotShiftX,pivotShiftY:p.pivotShiftY};
+    p.pivotAnchor=e.target.value;
+    // Calibration belongs to the previous source anchor, not to any alternate anchor.
+    p.pivotShiftX=0;p.pivotShiftY=0;
+    try{validateTransform(p);}catch(error){Object.assign(p,old);return status(error.message,true);}
+    setCustom();updateControls();renderList();draw();
   });
   $("showAnchors").addEventListener("change",renderAnchors);
   $("applyPreset").addEventListener("click",()=>{

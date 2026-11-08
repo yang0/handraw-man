@@ -54,3 +54,18 @@ test("existing whole-body gallery provides component-view entry",async()=>{
  const gallery=await readFile(new URL("../shapes.html",import.meta.url),"utf8");
  assert.match(gallery,/bamboo-parts\.html/);
 });
+
+test("shoulder calibration UI is wired, source-preserving, and visually flagged as draft",async()=>{
+  const html=await readFile(new URL("../bamboo-parts.html",import.meta.url),"utf8");
+  const app=await readFile(new URL("../web/bamboo-parts.mjs",import.meta.url),"utf8");
+  for(const id of ["pivotShiftX","pivotShiftY","valuePivotX","valuePivotY","resetPivot","posePreset"]){
+    assert.match(html,new RegExp('id="'+id+'"'));
+  }
+  assert.match(html,/value="arms-out-calibrated"/);
+  assert.match(html,/arms-out-calibrated\.png/);
+  assert.match(app,/calibratedPivotPlacement/);
+  assert.match(app,/pivotShiftX=0/);
+  assert.match(app,/pivotShiftY=0/);
+  assert.match(app,/ctx\.drawImage\(/);
+  assert.doesNotMatch(app,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
+});
