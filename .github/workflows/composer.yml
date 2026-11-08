@@ -7,11 +7,13 @@ on:
       - "index.html"
       - "cut-editor.html"
       - "candidates.html"
+      - "shapes.html"
       - "assets/candidates/**"
       - "web/**"
       - "src/**"
       - "scripts/generate-ai-source.mjs"
       - "scripts/import-imagegen-source.mjs"
+      - "scripts/verify_phase1_fullbody.mjs"
       - "tests/**"
       - "package.json"
       - ".github/workflows/composer.yml"
@@ -20,11 +22,13 @@ on:
       - "index.html"
       - "cut-editor.html"
       - "candidates.html"
+      - "shapes.html"
       - "assets/candidates/**"
       - "web/**"
       - "src/**"
       - "scripts/generate-ai-source.mjs"
       - "scripts/import-imagegen-source.mjs"
+      - "scripts/verify_phase1_fullbody.mjs"
       - "tests/**"
       - "package.json"
       - ".github/workflows/composer.yml"
@@ -43,3 +47,5 @@ jobs:
         run: npm test
       - name: Verify real image candidates
         run: npm run verify:candidates
+      - name: Verify actual full-body PNG source and derivative
+        run: npm run verify:phase1
