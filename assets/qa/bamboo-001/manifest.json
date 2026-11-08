@@ -15,6 +15,7 @@
   "findings": [
     "Neutral pose reproduces source pixels on white background.",
     "Articulated arm and leg poses can expose hard seams or disconnected outlines.",
+    "The shoulder-calibrated variant uses only existing pixels and manually selected pivot offsets, not edited joint artwork.",
     "These screenshots are QA evidence, NOT curated finished poses."
   ],
   "variants": [
@@ -38,6 +39,8 @@
         57
       ],
       "partAnglesDegrees": {},
+      "pivotCalibrationXY": {},
+      "artStatus": "unmodified-pivot",
       "reviewStatus": "draft",
       "articulatedJoinReviewed": false,
       "qualityGate": "neutral-pixel-identical"
@@ -65,6 +68,46 @@
         "left-arm": 32,
         "right-arm": -32
       },
+      "pivotCalibrationXY": {},
+      "artStatus": "unmodified-pivot",
+      "reviewStatus": "draft",
+      "articulatedJoinReviewed": false,
+      "qualityGate": "joint-seams-require-repair"
+    },
+    {
+      "pose": "arms-out-calibrated",
+      "file": "assets/qa/bamboo-001/arms-out-calibrated.png",
+      "width": 994,
+      "height": 1573,
+      "sizeBytes": 116337,
+      "sha256": "sha256:21d4c82961776d19c7ca65b248b36aa638dc13fd0840ee0ca6cc04fb5ffcea5b",
+      "alphaBoundsXYXY": [
+        58,
+        56,
+        937,
+        1516
+      ],
+      "marginLTRB": [
+        58,
+        56,
+        57,
+        57
+      ],
+      "partAnglesDegrees": {
+        "left-arm": 32,
+        "right-arm": -32
+      },
+      "pivotCalibrationXY": {
+        "left-arm": [
+          -17,
+          11
+        ],
+        "right-arm": [
+          17,
+          11
+        ]
+      },
+      "artStatus": "visual-candidate-only",
       "reviewStatus": "draft",
       "articulatedJoinReviewed": false,
       "qualityGate": "joint-seams-require-repair"
@@ -94,6 +137,8 @@
         "left-leg": 10,
         "right-leg": -10
       },
+      "pivotCalibrationXY": {},
+      "artStatus": "unmodified-pivot",
       "reviewStatus": "draft",
       "articulatedJoinReviewed": false,
       "qualityGate": "joint-seams-require-repair"
