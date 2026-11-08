@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HandRaw Man 开放角色素材实验室，预览真实 Open Peeps SVG 并组合头部组件。">
+  <title>HandRaw Man · 开放素材实验室</title>
+  <link rel="stylesheet" href="./web/styles.css">
+  <script type="module" src="./web/app.mjs"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">H.</span><div><strong>HandRaw Man</strong><small>OPEN CHARACTER LAB</small></div></div>
+    <div class="toplinks"><span class="pill">素材实验室 · Alpha</span><a href="./TOP_LEVEL_RULES.md">创作规范</a><a href="https://github.com/yang0/handraw-man" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+  </header>
+  <main class="workspace">
+    <aside class="leftpane panel">
+      <div class="section-title"><div><h1>真实素材库</h1><p id="assetCount">正在读取素材清单…</p></div></div>
+      <label class="search-wrap"><span class="sr-only">搜索素材</span><input id="search" type="search" placeholder="搜索名称或类别…" autocomplete="off"></label>
+      <div id="categories" class="categories" role="group" aria-label="素材类别"></div>
+      <div id="gallery" class="gallery" aria-live="polite"></div>
+      <div class="pager"><button id="prevPage" type="button">上一页</button><span id="pageLabel">—</span><button id="nextPage" type="button">下一页</button></div>
+      <p class="tiny source-note">已保留 Open Peeps 原始 SVG。点击缩略图选材；头、脸、胡须、配饰支持叠加，身体与姿势先作为真实原件单独查看。</p>
+    </aside>
+    <section class="centerpane">
+      <div class="canvas-toolbar"><div><h2>角色组合预览</h2><p>只组合真实 SVG 图层，不通过程序绘制人体</p></div><div class="tabs" role="tablist" aria-label="预览方式"><button id="headMode" class="active" aria-selected="true" role="tab">头部组合</button><button id="sourceMode" aria-selected="false" role="tab">单件原图</button></div></div>
+      <div class="artboard-wrap"><div class="artboard" id="artboard" aria-label="SVG 人物素材预览"><p class="loading">正在准备素材预览…</p></div></div>
+      <div class="canvas-footer"><span id="previewCaption">官方原始素材 · CC0</span><span class="review-pill">尚未通过一期纯形体审核</span></div>
+      <div class="warning"><strong>阶段说明</strong><p>本实验室展示现有 Open Peeps 素材组合效果，素材可能包含头发、服装、表情等。它们不等于 HandRaw 一期的无外观全身形体白模；后续将按素材缺口补充真实 AI 生成件并切割。</p></div>
+    </section>
+    <aside class="rightpane panel">
+      <div class="section-title"><div><h2>组合设置</h2><p>选择现有 SVG 部件</p></div></div>
+      <div id="layerOptions" class="layer-options">
+        <label>头部 <select id="headSelect" data-layer="head"></select></label>
+        <label>表情 <select id="faceSelect" data-layer="face"></select></label>
+        <label>胡须 <select id="beardSelect" data-layer="facial-hair"></select></label>
+        <label>配饰 <select id="accessorySelect" data-layer="accessories"></select></label>
+      </div>
+      <div class="actions"><button id="recipeDownload" class="primary">导出组合配方 JSON</button><button id="svgDownload">导出 SVG</button><button id="reset" class="secondary">重置组合</button></div>
+      <div class="rule"></div>
+      <h3>素材溯源</h3>
+      <dl class="provenance"><dt>原画作者</dt><dd>Pablo Stanley</dd><dt>原始作品许可</dt><dd><a href="https://www.openpeeps.com/" target="_blank" rel="noopener noreferrer">Open Peeps · CC0 ↗</a></dd><dt>实际导入来源</dt><dd><a id="mirrorLink" target="_blank" rel="noopener noreferrer" href="https://github.com/jenshor/open-peeps">第三方公开镜像 ↗</a></dd><dt>文件哈希</dt><dd id="hashValue">—</dd><dt>当前素材</dt><dd id="sourceName">—</dd><dt>人工审核</dt><dd>原始归档，尚未评审</dd></dl>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <p class="tiny">原始素材来自固定上游快照。素材哈希与镜像一致；尚未与作者官方 Gumroad 原包逐字节比对。复用与后续加工都要保留来源。</p>
+    </aside>
+  </main>
+</body>
+</html>
