@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="HandRaw Man Bamboo-001 真实图片部件分割及可重组实验室">
+  <title>HandRaw Man · Bamboo-001 六部件装配验证</title>
+  <link rel="stylesheet" href="./web/bamboo-parts.css">
+  <script type="module" src="./web/bamboo-parts.mjs"></script>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="./shapes.html">← HandRaw Man / Bamboo-001</a>
+  <div class="links"><a href="./cut-editor.html">通用裁切工作台</a><a href="./docs/BAMBOO-PART-SLICING.md">分切审计</a><a href="https://github.com/yang0/handraw-man/issues/5">Issue #5</a></div>
+</header>
+<main>
+  <section class="intro">
+    <div>
+      <p class="eyebrow">REAL IMAGE ASSETS / SEGMENTATION TEST</p>
+      <h1>一张原图，六个真实部件</h1>
+      <p>只从 Bamboo-001 的既有 PNG 提取像素，形成头部、躯干、左右手臂与双腿。原始姿态能重组回原图；自由活动的关节衔接<strong>尚未通过审查</strong>。</p>
+    </div>
+    <div class="state">草稿 · 不计入正式 48 母版</div>
+  </section>
+  <section class="metrics">
+    <div><strong>6</strong><span>实际裁切 PNG</span></div>
+    <div><strong>1:1</strong><span>原位重组像素检查</span></div>
+    <div><strong>0</strong><span>已批准可活动关节</span></div>
+  </section>
+  <div class="workspace">
+    <aside class="panel">
+      <h2>部件图层</h2>
+      <p class="hint">点击选择；独立部件可以显示/隐藏或调整位置。素材来自同一张真实原图，不是代码绘制。</p>
+      <div id="partList" class="part-list">正在载入真实 PNG…</div>
+      <button class="soft" id="reset" type="button">恢复原图拼装位置</button>
+      <button id="downloadRecipe" type="button">导出装配配方 JSON</button>
+    </aside>
+    <section class="panel preview">
+      <div class="preview-head"><div><h2>六层叠加预览</h2><p id="composeLabel">加载素材中…</p></div><button id="downloadPng" type="button">导出组合 PNG</button></div>
+      <div class="preview-frame">
+        <canvas id="board" width="394" height="1493" aria-label="仅由六张真实裁切 PNG 合成的人物图"></canvas>
+      </div>
+      <div class="source-line"><span>用于校对的原始完整透明图</span><a href="./assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png" target="_blank" rel="noopener noreferrer">查看原件</a></div>
+      <p class="warning">当前用的是按原图像素位置切割的边界，不是完整的关节分层设计。移动手臂或腿部后，切口可能露出断线、遮挡或缺损；此现象需要真实修图，不能让程序补画身体。</p>
+    </section>
+    <aside class="panel inspector">
+      <h2>所选部件</h2>
+      <p id="selectedLabel" class="hint">尚未选择</p>
+      <label for="positionX">水平偏移 X（像素）</label>
+      <input id="positionX" type="range" min="-120" max="120" value="0" step="1">
+      <output id="valueX">0</output>
+      <label for="positionY">垂直偏移 Y（像素）</label>
+      <input id="positionY" type="range" min="-120" max="120" value="0" step="1">
+      <output id="valueY">0</output>
+      <button class="soft" id="zeroSelected" type="button">还原所选部件位置</button>
+      <div class="break"></div>
+      <h3>来源与质量信息</h3>
+      <dl>
+        <dt>原图来源</dt><dd>ChatGPT 内置生图</dd>
+        <dt>原图尺寸</dt><dd>1024 × 1536</dd>
+        <dt>裁切来源</dt><dd>Bamboo-001 394 × 1493</dd>
+        <dt>模型版本</dt><dd>未披露</dd>
+        <dt>正式授权与发布</dt><dd>待审</dd>
+        <dt>独立活动关节</dt><dd>未通过审查</dd>
+      </dl>
+      <p class="hint">每个 PNG 的 SHA-256、原始坐标、未审锚点，均见 <a href="./assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json">真实部件清单</a>。</p>
+    </aside>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+</body></html>
