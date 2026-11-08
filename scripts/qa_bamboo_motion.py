@@ -22,8 +22,10 @@ ORIGIN_X, ORIGIN_Y = 300, 40
 PRESETS = {
     "neutral": {},
     "arms-out": {"left-arm": 32, "right-arm": -32},
+    "arms-out-calibrated": {"left-arm": 32, "right-arm": -32},
     "walk-test": {"left-arm": -10, "right-arm": 10, "left-leg": 10, "right-leg": -10}
 }
+SHOULDER_CORRECTION = {"left-arm": (-17, 11), "right-arm": (17, 11)}
 PIVOT_NAME = {
     "head": "neck", "torso": "neck",
     "left-arm": "shoulderL", "right-arm": "shoulderR",
@@ -65,8 +67,9 @@ def build():
             name = part["category"]
             pivot = part["anchors"][PIVOT_NAME[name]]
             x0,y0,_,_ = part["sourceBoundsXYXY"]
-            anchor_x = pivot["sourceX"]+ORIGIN_X
-            anchor_y = pivot["sourceY"]+ORIGIN_Y
+            dx,dy = SHOULDER_CORRECTION.get(name,(0,0)) if preset=="arms-out-calibrated" else (0,0)
+            anchor_x = pivot["sourceX"]+dx+ORIGIN_X
+            anchor_y = pivot["sourceY"]+dy+ORIGIN_Y
             layer = Image.new("RGBA", (BOARD_W, BOARD_H), (0, 0, 0, 0))
             layer.alpha_composite(img, (x0+ORIGIN_X, y0+ORIGIN_Y))
             angle = motions.get(name, 0)
@@ -102,6 +105,8 @@ def build():
             "sizeBytes":len(data),"sha256":"sha256:"+digest(data),
             "alphaBoundsXYXY":list(box),"marginLTRB":margins,
             "partAnglesDegrees":motions,
+            "pivotCalibrationXY":SHOULDER_CORRECTION if preset=="arms-out-calibrated" else {},
+            "artStatus":"visual-candidate-only" if preset=="arms-out-calibrated" else "unmodified-pivot",
             "reviewStatus":"draft","articulatedJoinReviewed":False,
             "qualityGate":"neutral-pixel-identical" if preset=="neutral" else "joint-seams-require-repair"
         })
@@ -115,6 +120,7 @@ def build():
         "formalApproved":False,"reviewStatus":"draft",
         "findings":["Neutral pose reproduces source pixels on white background.",
                     "Articulated arm and leg poses can expose hard seams or disconnected outlines.",
+                    "The shoulder-calibrated variant uses only existing pixels and manually selected pivot offsets, not edited joint artwork.",
                     "These screenshots are QA evidence, NOT curated finished poses."],
         "variants":records
     }
@@ -149,12 +155,12 @@ def main():
                 raise ValueError("QA image pixels differ from real PNG composition "+item["pose"])
         if data["sourcePartManifestSha256"]!=manifest["sourcePartManifestSha256"]:
             raise ValueError("Source manifest hash changed")
-        print("PASS: 3 committed true-image motion QA previews, exact neutral and safe canvas margins.")
+        print("PASS: 4 committed real-image motion QA previews, neutral pixel-exact; calibrated shoulder art still draft.")
     else:
         OUTPUT.mkdir(parents=True,exist_ok=True)
         for name,content in outputs.items():
             (OUTPUT/name).write_bytes(content)
-        print("Generated 3 QA-only PNG previews from existing real Bamboo-001 parts; no body drawing.")
+        print("Generated 4 QA-only PNG previews from existing Bamboo-001 PNGs; no body drawing.")
 
 if __name__=="__main__":
     main()

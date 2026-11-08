@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/bamboo-joint-qa
+      - feat/bamboo-shoulder-pivot-calibration
     paths:
       - "scripts/qa_bamboo_motion.py"
       - ".github/workflows/materialize-bamboo-qa.yml"
@@ -37,6 +38,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "QA images already committed"
           else
-            git commit -m "assets(#14): add actual PNG motion QA captures, explicitly unapproved"
-            git push origin HEAD:feat/bamboo-joint-qa
+            git commit -m "assets(#15): add calibrated shoulder true-PNG QA comparison, unapproved"
+            git push origin HEAD:"${GITHUB_REF_NAME}"
           fi
