@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "kind": "bamboo-001-real-source-joint-crops",
+  "sourceOriginalFile": "assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png",
+  "sourceSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+  "sourceImageSize": [
+    394,
+    1493
+  ],
+  "model": "undisclosed",
+  "method": "exact crop of real PNG pixels, no human paths drawn",
+  "referenceCount": 4,
+  "approvedRepairCount": 0,
+  "assets": [
+    {
+      "id": "bamboo-001-left-shoulder-source",
+      "joint": "left-shoulder",
+      "file": "assets/repair-inputs/bamboo-001/left-shoulder.png",
+      "originalBoundsXYXY": [
+        92,
+        238,
+        190,
+        425
+      ],
+      "width": 98,
+      "height": 187,
+      "sha256": "sha256:2a858671a03905450cd2172e53b8bbcc64482b640964d01ea2f2ea11c6487e49",
+      "sizeBytes": 2960,
+      "sourceSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+      "role": "reference-only-not-a-replacement-joint",
+      "reviewStatus": "reference-only",
+      "phase1Ready": false,
+      "artApproved": false,
+      "independentJointAsset": false
+    },
+    {
+      "id": "bamboo-001-right-shoulder-source",
+      "joint": "right-shoulder",
+      "file": "assets/repair-inputs/bamboo-001/right-shoulder.png",
+      "originalBoundsXYXY": [
+        204,
+        238,
+        302,
+        425
+      ],
+      "width": 98,
+      "height": 187,
+      "sha256": "sha256:2397f78d0cdf5aa3cc00d0236c692ad180a34186fd81071f642e464e2aa153cb",
+      "sizeBytes": 3111,
+      "sourceSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+      "role": "reference-only-not-a-replacement-joint",
+      "reviewStatus": "reference-only",
+      "phase1Ready": false,
+      "artApproved": false,
+      "independentJointAsset": false
+    },
+    {
+      "id": "bamboo-001-left-hip-source",
+      "joint": "left-hip",
+      "file": "assets/repair-inputs/bamboo-001/left-hip.png",
+      "originalBoundsXYXY": [
+        108,
+        620,
+        203,
+        845
+      ],
+      "width": 95,
+      "height": 225,
+      "sha256": "sha256:d8be6737bb570308691037ce5c1237535db8a406abe45f7595c5ac573267a96d",
+      "sizeBytes": 3444,
+      "sourceSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+      "role": "reference-only-not-a-replacement-joint",
+      "reviewStatus": "reference-only",
+      "phase1Ready": false,
+      "artApproved": false,
+      "independentJointAsset": false
+    },
+    {
+      "id": "bamboo-001-right-hip-source",
+      "joint": "right-hip",
+      "file": "assets/repair-inputs/bamboo-001/right-hip.png",
+      "originalBoundsXYXY": [
+        191,
+        620,
+        286,
+        845
+      ],
+      "width": 95,
+      "height": 225,
+      "sha256": "sha256:3db0e5ab843c0e26d59e1ea0a00f4e5e7360eb372a338cb3841b916179fb5510",
+      "sizeBytes": 3185,
+      "sourceSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+      "role": "reference-only-not-a-replacement-joint",
+      "reviewStatus": "reference-only",
+      "phase1Ready": false,
+      "artApproved": false,
+      "independentJointAsset": false
+    }
+  ]
+}
