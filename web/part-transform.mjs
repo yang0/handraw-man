@@ -7,12 +7,18 @@ export const DEFAULT_PIVOTS=Object.freeze({
   "left-arm":"shoulderL","right-arm":"shoulderR",
   "left-leg":"hipL","right-leg":"hipR"
 });
+export const SHOULDER_CALIBRATION=Object.freeze({
+  "left-arm":Object.freeze({x:-17,y:11}),
+  "right-arm":Object.freeze({x:17,y:11})
+});
 export const PRESETS=Object.freeze({
   neutral:Object.freeze({}),
   "arms-out":Object.freeze({"left-arm":32,"right-arm":-32}),
+  "arms-out-calibrated":Object.freeze({"left-arm":32,"right-arm":-32}),
   "walk-test":Object.freeze({"left-arm":-10,"right-arm":10,"left-leg":10,"right-leg":-10})
 });
 const MAX_OFFSET=120;
+const MAX_PIVOT_SHIFT=60;
 const MAX_ANGLE=90;
 const MIN_SCALE=.8;
 const MAX_SCALE=1.2;
@@ -33,7 +39,7 @@ export function chooseDefaultPivot(part) {
 }
 export function neutralPart(original) {
   return {...original,pivotAnchor:chooseDefaultPivot(original),visible:true,
-    offsetX:0,offsetY:0,rotation:0,scale:1};
+    offsetX:0,offsetY:0,rotation:0,scale:1,pivotShiftX:0,pivotShiftY:0};
 }
 export function validateTransform(part) {
   if(!part||typeof part!=="object"||!part.anchors)throw Error("无效部件");
@@ -47,6 +53,8 @@ export function validateTransform(part) {
   within(part.offsetY,-MAX_OFFSET,MAX_OFFSET,"Y 偏移");
   within(part.rotation,-MAX_ANGLE,MAX_ANGLE,"旋转角");
   within(part.scale,MIN_SCALE,MAX_SCALE,"缩放");
+  within(part.pivotShiftX,-MAX_PIVOT_SHIFT,MAX_PIVOT_SHIFT,"旋转轴 X 校准");
+  within(part.pivotShiftY,-MAX_PIVOT_SHIFT,MAX_PIVOT_SHIFT,"旋转轴 Y 校准");
   if(typeof part.visible!=="boolean")throw Error("显示标记无效");
   return anchor;
 }
@@ -54,10 +62,10 @@ export function imageTransform(part) {
   const a=validateTransform(part);
   const [x0,y0]=part.sourceBoundsXYXY;
   return {
-    translateX:a.sourceX+part.offsetX,
-    translateY:a.sourceY+part.offsetY,
-    offsetImageX:x0-a.sourceX,
-    offsetImageY:y0-a.sourceY,
+    translateX:a.sourceX+part.pivotShiftX+part.offsetX,
+    translateY:a.sourceY+part.pivotShiftY+part.offsetY,
+    offsetImageX:x0-a.sourceX-part.pivotShiftX,
+    offsetImageY:y0-a.sourceY-part.pivotShiftY,
     rotationRadians:part.rotation*Math.PI/180,
     scale:part.scale
   };
@@ -71,6 +79,11 @@ export function sourcePointPlacement(part,point) {
     x:p.translateX+p.scale*(dx*cos-dy*sin),
     y:p.translateY+p.scale*(dx*sin+dy*cos)
   };
+}
+export function calibratedPivotPlacement(part) {
+  const anchor=validateTransform(part);
+  return {x:anchor.sourceX+part.pivotShiftX+part.offsetX,
+    y:anchor.sourceY+part.pivotShiftY+part.offsetY};
 }
 export function anchorPlacement(part,anchorName=part.pivotAnchor) {
   const anchor=part.anchors?.[anchorName];
@@ -87,6 +100,10 @@ export function posePreset(parts,name) {
   return parts.map(original=>{
     const p=neutralPart(original);
     p.rotation=changes[p.category]||0;
+    if(name==="arms-out-calibrated" && Object.hasOwn(SHOULDER_CALIBRATION,p.category)) {
+      p.pivotShiftX=SHOULDER_CALIBRATION[p.category].x;
+      p.pivotShiftY=SHOULDER_CALIBRATION[p.category].y;
+    }
     return p;
   });
 }
@@ -94,7 +111,7 @@ export function exportPoseRecipe(parts,catalog) {
   if(!catalog||!catalog.source?.sha256||parts.length!==6)throw Error("真实来源清单缺失");
   for(const part of parts)validateTransform(part);
   return {
-    schemaVersion:2,kind:"bamboo-001-joint-preview",
+    schemaVersion:3,kind:"bamboo-001-joint-preview",
     sourceAssetId:"bamboo-001",sourceSha256:catalog.source.sha256,
     reviewStatus:"draft",phase1Ready:false,articulatedJoinReviewed:false,
     qualityGate:isOriginalPose(parts)?"neutral-pixel-identical-offline":"needs-manual-joint-repair",
@@ -102,12 +119,13 @@ export function exportPoseRecipe(parts,catalog) {
       id:part.id,sourceSha256:part.sha256,
       visible:part.visible,pivotAnchor:part.pivotAnchor,
       offsetX:part.offsetX,offsetY:part.offsetY,
-      rotation:part.rotation,scale:part.scale
+      rotation:part.rotation,scale:part.scale,
+      pivotShiftX:part.pivotShiftX,pivotShiftY:part.pivotShiftY
     }))
   };
 }
 export function validateImportedPose(recipe,catalog) {
-  if(!recipe||recipe.schemaVersion!==2||recipe.kind!=="bamboo-001-joint-preview"||
+  if(!recipe||![2,3].includes(recipe.schemaVersion)||recipe.kind!=="bamboo-001-joint-preview"||
     recipe.sourceAssetId!=="bamboo-001"||
     recipe.sourceSha256!==catalog.source.sha256)throw Error("配方版本或 Bamboo 来源哈希不匹配");
   if(recipe.reviewStatus!=="draft"||recipe.phase1Ready!==false||
@@ -124,7 +142,9 @@ export function validateImportedPose(recipe,catalog) {
     if(layer.sourceSha256!==raw.sha256)throw Error("部件图片哈希不一致: "+layer.id);
     const part={...raw,visible:layer.visible,pivotAnchor:layer.pivotAnchor,
       offsetX:layer.offsetX,offsetY:layer.offsetY,
-      rotation:layer.rotation,scale:layer.scale};
+      rotation:layer.rotation,scale:layer.scale,
+      pivotShiftX:recipe.schemaVersion===2?0:layer.pivotShiftX,
+      pivotShiftY:recipe.schemaVersion===2?0:layer.pivotShiftY};
     validateTransform(part);
     return part;
   });
