@@ -129,6 +129,8 @@ export function validateImportedPose(recipe,catalog) {
     return part;
   });
   if(seen.size!==refs.size)throw Error("配方缺失真实来源部件");
+  const expected=isOriginalPose(result)?"neutral-pixel-identical-offline":"needs-manual-joint-repair";
+  if(recipe.qualityGate!==expected)throw Error("配方质量状态与实际图层变换不一致");
   return result;
 }
 export function buildJointQARecord(parts,catalog,{defect,notes=""}={}) {

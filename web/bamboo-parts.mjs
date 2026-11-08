@@ -20,13 +20,24 @@ function sourceUrl(file) {
     throw Error("素材路径不在已审核来源目录");
   return "./"+file;
 }
-async function loadImage(file) {
-  return await new Promise((resolve,reject)=>{
-    const image=new Image();
-    image.onload=()=>resolve(image);
-    image.onerror=()=>reject(Error("真实 PNG 加载失败："+file));
-    image.src=sourceUrl(file);
-  });
+async function loadImage(part) {
+  if(!globalThis.crypto?.subtle)throw Error("图片完整性校验需要 localhost 或 HTTPS 安全上下文");
+  const response=await fetch(sourceUrl(part.file),{cache:"no-store"});
+  if(!response.ok)throw Error("真实 PNG 加载失败："+part.id);
+  const bytes=await response.arrayBuffer();
+  if(bytes.byteLength!==part.sizeBytes)throw Error("实际图片字节大小和清单不一致："+part.id);
+  const hash=await crypto.subtle.digest("SHA-256",bytes);
+  const hex=[...new Uint8Array(hash)].map(n=>n.toString(16).padStart(2,"0")).join("");
+  if("sha256:"+hex!==part.sha256)throw Error("图片 SHA-256 校验失败："+part.id);
+  const url=URL.createObjectURL(new Blob([bytes],{type:"image/png"}));
+  try{
+    return await new Promise((resolve,reject)=>{
+      const image=new Image();
+      image.onload=()=>resolve(image);
+      image.onerror=()=>reject(Error("真实 PNG 解码失败："+part.id));
+      image.src=url;
+    });
+  } finally {URL.revokeObjectURL(url);}
 }
 function selectedPart() { return state.parts.find(p=>p.id===state.selected)||null; }
 function draw() {
@@ -215,7 +226,7 @@ async function init(){
      data.reviewStatus!=="draft"||data.phase1Ready!==false||
      !Array.isArray(data.parts)||data.parts.length!==6)throw Error("真实部件审查状态异常");
   const parts=posePreset(data.parts,"neutral");
-  const loaded=await Promise.all(parts.map(p=>loadImage(p.file)));
+  const loaded=await Promise.all(parts.map(p=>loadImage(p)));
   for(let i=0;i<parts.length;i++){
     const p=parts[i];
     if(p.reviewStatus!=="draft"||p.phase1Ready!==false||p.articulatedJoinReviewed!==false)

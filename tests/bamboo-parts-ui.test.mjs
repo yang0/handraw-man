@@ -44,8 +44,11 @@ test("assembly UI does not procedurally draw characters",async()=>{
  for(const id of used)assert.ok(ids.has(id),"missing control #"+id);
  assert.match(js,/ctx\.drawImage/);
  assert.doesNotMatch(js,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
- assert.match(js,/reviewStatus:"draft"/);
- assert.match(js,/phase1Ready:false/);
+ const core=await readFile(new URL("../web/part-transform.mjs",import.meta.url),"utf8");
+ assert.match(core,/reviewStatus:"draft"/);
+ assert.match(core,/phase1Ready:false/);
+ assert.match(js,/crypto\.subtle\.digest/);
+ assert.match(js,/part\.sha256/);
 });
 test("existing whole-body gallery provides component-view entry",async()=>{
  const gallery=await readFile(new URL("../shapes.html",import.meta.url),"utf8");
