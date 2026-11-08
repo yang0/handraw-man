@@ -1,0 +1,25 @@
+name: Validate Open Peeps source assets
+
+on:
+  push:
+    branches: [main, "feat/**"]
+    paths:
+      - "assets/sources/open-peeps/**"
+      - "scripts/verify_open_peeps.py"
+      - ".github/workflows/open-peeps-assets.yml"
+  pull_request:
+    paths:
+      - "assets/sources/open-peeps/**"
+      - "scripts/verify_open_peeps.py"
+      - ".github/workflows/open-peeps-assets.yml"
+
+jobs:
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify source file hashes and XML integrity
+        run: python3 scripts/verify_open_peeps.py
