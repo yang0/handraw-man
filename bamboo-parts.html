@@ -36,7 +36,8 @@
       <div class="preset-row">
         <select id="posePreset">
           <option value="neutral">原始姿态（像素对齐）</option>
-          <option value="arms-out">双臂张开（暴露肩部接缝）</option>
+          <option value="arms-out">双臂张开（原始锚点）</option>
+          <option value="arms-out-calibrated">双臂张开（人工校准肩部锚点）</option>
           <option value="walk-test">走路测试（暴露髋部接缝）</option>
           <option value="custom" disabled>自定义姿态</option>
         </select>
@@ -57,7 +58,7 @@
       </div>
       <div id="poseQuality" class="pose-quality" role="status">所有关节未审核</div>
       <details class="qa-snapshots">
-        <summary>查看 3 张已归档的真实姿态 QA 截图（均未审核）</summary>
+        <summary>查看真实姿态 QA 截图（均未审核）</summary>
         <div class="qa-strip">
           <a href="./assets/qa/bamboo-001/neutral.png" target="_blank" rel="noopener noreferrer">
             <img src="./assets/qa/bamboo-001/neutral.png" loading="lazy" alt="六图层原位重组真实 PNG QA 图">
@@ -67,6 +68,10 @@
             <img src="./assets/qa/bamboo-001/arms-out.png" loading="lazy" alt="双臂张开后检查肩部切口的真实 PNG QA 图">
             <span>双臂张开 · 接缝待修复</span>
           </a>
+          <a href="./assets/qa/bamboo-001/arms-out-calibrated.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/qa/bamboo-001/arms-out-calibrated.png" loading="lazy" alt="使用校准肩锚点的真实六图层 PNG QA 对照">
+            <span>肩部校准 · 缺陷待人工审核</span>
+          </a>
           <a href="./assets/qa/bamboo-001/walk-test.png" target="_blank" rel="noopener noreferrer">
             <img src="./assets/qa/bamboo-001/walk-test.png" loading="lazy" alt="走路模拟中检查髋部切口的真实 PNG QA 图">
             <span>走路测试 · 接缝待修复</span>
@@ -74,7 +79,7 @@
         </div>
       </details>
       <div class="source-line"><span>用于校对的原始完整透明图</span><a href="./assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png" target="_blank" rel="noopener noreferrer">查看原件</a></div>
-      <p class="warning">当前用的是按原图像素位置切割的边界，不是完整的关节分层设计。移动手臂或腿部后，切口可能露出断线、遮挡或缺损；此现象需要真实修图，不能让程序补画身体。</p>
+      <p class="warning">肩部锚点校准是原图层旋转轴的人工位置修正，并非新的关节绘画；局部笔画重叠和髋部缺口仍需真实图像修复。当前用的是按原图像素位置切割的边界，不是完整的关节分层设计。移动手臂或腿部后，切口可能露出断线、遮挡或缺损；此现象需要真实修图，不能让程序补画身体。</p>
     </section>
     <aside class="panel inspector">
       <h2>所选部件</h2>
@@ -87,6 +92,14 @@
       <output id="valueY">0</output>
       <label for="pivotAnchor">旋转锚点（来源图坐标）</label>
       <select id="pivotAnchor"></select>
+      <div class="calibration-header">旋转轴微调（源图像素，不改图片）</div>
+      <label for="pivotShiftX">轴心 X 偏移（像素）</label>
+      <input id="pivotShiftX" type="range" min="-60" max="60" value="0" step="1">
+      <output id="valuePivotX">0</output>
+      <label for="pivotShiftY">轴心 Y 偏移（像素）</label>
+      <input id="pivotShiftY" type="range" min="-60" max="60" value="0" step="1">
+      <output id="valuePivotY">0</output>
+      <button class="soft" id="resetPivot" type="button">撤销当前部件的轴心校准</button>
       <label for="rotation">围绕锚点旋转</label>
       <input id="rotation" type="range" min="-90" max="90" value="0" step="1">
       <output id="valueRotation">0°</output>

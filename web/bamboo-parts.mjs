@@ -4,7 +4,7 @@
  */
 import {
   chooseDefaultPivot,neutralPart,validateTransform,imageTransform,anchorPlacement,
-  isOriginalPose,posePreset,exportPoseRecipe,validateImportedPose,buildJointQARecord
+  isOriginalPose,posePreset,exportPoseRecipe,validateImportedPose,buildJointQARecord,calibratedPivotPlacement
 } from "./part-transform.mjs";
 
 const $=id=>document.getElementById(id);
@@ -75,6 +75,16 @@ function renderAnchors() {
   if(!$("showAnchors").checked)return;
   const p=selectedPart();
   if(!p)return;
+  const calibrated=(p.pivotShiftX!==0||p.pivotShiftY!==0);
+  if(calibrated){
+    const pos=calibratedPivotPlacement(p);
+    const mark=document.createElement("span");
+    mark.className="anchor-dot calibrated";
+    mark.textContent="校准轴";
+    mark.style.left=(pos.x+BOARD.originX)/BOARD.width*100+"%";
+    mark.style.top=(pos.y+BOARD.originY)/BOARD.height*100+"%";
+    root.append(mark);
+  }
   for(const [name] of Object.entries(p.anchors)){
     const pos=anchorPlacement(p,name);
     const el=document.createElement("span");
@@ -103,7 +113,7 @@ function renderList() {
       state.selected=p.id;renderList();updateControls();draw();
     });
     const detail=document.createElement("small");
-    detail.textContent=p.width+"×"+p.height+" · "+p.pivotAnchor+" · 未审";
+    detail.textContent=p.width+"×"+p.height+" · "+p.pivotAnchor+(p.pivotShiftX||p.pivotShiftY?" · 轴心微调":"")+" · 未审";
     content.append(button,detail);row.append(visible,img,content);root.append(row);
   }
 }
@@ -119,6 +129,11 @@ function updateControls() {
   $("valueX").value=p?.offsetX??0;
   $("valueY").value=p?.offsetY??0;
   $("valueRotation").value=(p?.rotation??0)+"°";
+  $("valuePivotX").value=p?.pivotShiftX??0;
+  $("valuePivotY").value=p?.pivotShiftY??0;
+  for(const [id,value] of [["pivotShiftX",p?.pivotShiftX??0],["pivotShiftY",p?.pivotShiftY??0]]){
+    $(id).disabled=!p;$(id).value=value;
+  }
   $("valueScale").value=Math.round((p?.scale??1)*100)+"%";
   const pivot=$("pivotAnchor");pivot.replaceChildren();
   if(p){
@@ -129,6 +144,7 @@ function updateControls() {
   }
   pivot.disabled=!p;
   $("zeroSelected").disabled=!p;
+  $("resetPivot").disabled=!p || (!p.pivotShiftX && !p.pivotShiftY);
 }
 function setCustom(){
   state.preset="custom";
@@ -139,7 +155,9 @@ function showPreset(name) {
   state.preset=name;
   $("posePreset").value=name;
   draw();renderList();updateControls();
-  status(name==="neutral"?"已恢复真实原位重组":"已加载模拟姿态；请检查关节缺口，不代表已经修复");
+  status(name==="neutral"?"已恢复真实原位重组":
+    name==="arms-out-calibrated"?"已应用人工审查候选肩部锚点：断口改善，但仍未通过美术审核。":
+    "已加载模拟姿态；请检查关节缺口，不代表已经修复");
 }
 function saveBlob(blob,filename){
   const url=URL.createObjectURL(blob),link=document.createElement("a");
@@ -165,13 +183,21 @@ function bind(){
   $("reset").addEventListener("click",()=>showPreset("neutral"));
   $("zeroSelected").addEventListener("click",()=>{
     const p=selectedPart();if(!p)return;
-    Object.assign(p,{offsetX:0,offsetY:0,rotation:0,scale:1,pivotAnchor:chooseDefaultPivot(p)});
+    Object.assign(p,{offsetX:0,offsetY:0,rotation:0,scale:1,pivotAnchor:chooseDefaultPivot(p),pivotShiftX:0,pivotShiftY:0});
     setCustom();updateControls();renderList();draw();
   });
   applyControl("positionX","offsetX");
   applyControl("positionY","offsetY");
   applyControl("rotation","rotation");
   applyControl("scale","scale",v=>Number(v)/100);
+  applyControl("pivotShiftX","pivotShiftX");
+  applyControl("pivotShiftY","pivotShiftY");
+  $("resetPivot").addEventListener("click",()=>{
+    const p=selectedPart();if(!p)return;
+    p.pivotShiftX=0;p.pivotShiftY=0;
+    setCustom();updateControls();draw();renderList();
+    status("已撤销选中部件的肩部锚点校准，真实 PNG 原件从未改变。");
+  });
   $("pivotAnchor").addEventListener("change",e=>{
     const p=selectedPart();if(!p)return;
     const old=p.pivotAnchor;p.pivotAnchor=e.target.value;
