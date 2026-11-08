@@ -166,7 +166,8 @@ function bind() {
       message("配方 JSON 已导出（带固定素材快照版本）。");
     } catch (err) { message("配方导出失败：" + err.message, true); }
   });
-  $("svgDownload").addEventListener("click", exportSvg);\n  $("recipeImport").addEventListener("click", () => $("recipeFile").click());
+  $("svgDownload").addEventListener("click", exportSvg);
+  $("recipeImport").addEventListener("click", () => $("recipeFile").click());
   $("recipeFile").addEventListener("change", async e => {
     const file = e.target.files?.[0];
     if (!file) return;
