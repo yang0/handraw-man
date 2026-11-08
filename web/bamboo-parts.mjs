@@ -230,7 +230,7 @@ function bind(){
       if(state.useCandidates&&state.replacements.size>0)
         throw Error("本地替换 PNG 尚未登记入库，配方无法复现候选图；请先关闭试装模式，或导出 QA 记录。");
       saveJSON(exportPoseRecipe(state.parts,state.catalog),"bamboo-001-joint-recipe.json");
-    catch(error){status(error.message,true);}
+    }catch(error){status(error.message,true);}
   });
   $("chooseReplacement").addEventListener("click",()=>$("replacementFile").click());
   $("replacementFile").addEventListener("change",async e=>{
