@@ -32,6 +32,14 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - [路线图与验收](docs/ROADMAP.md)
 - [许可与素材来源策略](docs/LICENSING.md)
 
+## Bamboo-001 · 锚点旋转与关节问题质检（Issue #14）
+
+[打开关节测试工作台](bamboo-parts.html)：在六个真实 PNG 分件基础上，新增肩/颈/髋锚点旋转、显示锚点、位移与缩放、三种对比姿态、配方导入导出与接缝问题记录。
+
+- [三张实际姿态 QA 图（均为 Draft）](assets/qa/bamboo-001/) · [可复验的哈希清单](assets/qa/bamboo-001/manifest.json) · [质量结论与使用说明](docs/BAMBOO-JOINT-QA.md)。
+- 已验证：**原位像素一致、锚点旋转稳定、画布不会裁掉张开的手脚**；仍未解决：关节断线、手脚移动后的造型完整性。
+- **全部仍是未审核草稿，不是正式可摆姿人物母版**。
+
 ## Bamboo-001 · 真实六部件拆分装配实验（Issue #5）
 
 - [六部件装配实验室](bamboo-parts.html)：真实透明 PNG 的头、躯干、左右手臂、左右腿；可以调整位置、显示/隐藏、导出 PNG/JSON。

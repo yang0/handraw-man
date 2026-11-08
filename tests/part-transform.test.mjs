@@ -66,6 +66,8 @@ test("JSON round trip checks source+part hashes, IDs, numeric range, review stat
   assert.throws(()=>validateImportedPose(duplicate,manifest),/重复/);
   const over=structuredClone(saved);over.layers[1].rotation=200;
   assert.throws(()=>validateImportedPose(over,manifest),/超出/);
+  const forged=structuredClone(saved);forged.qualityGate="neutral-pixel-identical-offline";
+  assert.throws(()=>validateImportedPose(forged,manifest),/质量状态/);
   const invalid=structuredClone(saved);invalid.layers[1].offsetX=NaN;
   assert.throws(()=>validateImportedPose(invalid,manifest),/有限数字/);
 });

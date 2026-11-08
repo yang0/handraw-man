@@ -56,6 +56,23 @@
         </div>
       </div>
       <div id="poseQuality" class="pose-quality" role="status">所有关节未审核</div>
+      <details class="qa-snapshots">
+        <summary>查看 3 张已归档的真实姿态 QA 截图（均未审核）</summary>
+        <div class="qa-strip">
+          <a href="./assets/qa/bamboo-001/neutral.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/qa/bamboo-001/neutral.png" loading="lazy" alt="六图层原位重组真实 PNG QA 图">
+            <span>原位 · 像素一致</span>
+          </a>
+          <a href="./assets/qa/bamboo-001/arms-out.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/qa/bamboo-001/arms-out.png" loading="lazy" alt="双臂张开后检查肩部切口的真实 PNG QA 图">
+            <span>双臂张开 · 接缝待修复</span>
+          </a>
+          <a href="./assets/qa/bamboo-001/walk-test.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/qa/bamboo-001/walk-test.png" loading="lazy" alt="走路模拟中检查髋部切口的真实 PNG QA 图">
+            <span>走路测试 · 接缝待修复</span>
+          </a>
+        </div>
+      </details>
       <div class="source-line"><span>用于校对的原始完整透明图</span><a href="./assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png" target="_blank" rel="noopener noreferrer">查看原件</a></div>
       <p class="warning">当前用的是按原图像素位置切割的边界，不是完整的关节分层设计。移动手臂或腿部后，切口可能露出断线、遮挡或缺损；此现象需要真实修图，不能让程序补画身体。</p>
     </section>

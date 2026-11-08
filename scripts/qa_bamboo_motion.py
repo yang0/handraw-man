@@ -130,7 +130,14 @@ def main():
         data=json.loads((OUTPUT/"manifest.json").read_text("utf8"))
         if data["schemaVersion"]!=1 or data["formalApproved"]:
             raise ValueError("Motion QA evidence corrupted or falsely approved")
-        for item in manifest["variants"]:
+        if len(data.get("variants",[]))!=len(manifest["variants"]):
+            raise ValueError("QA variation count altered")
+        for idx,item in enumerate(manifest["variants"]):
+            saved=data["variants"][idx]
+            if saved["pose"]!=item["pose"] or saved["reviewStatus"]!="draft" or saved["articulatedJoinReviewed"]:
+                raise ValueError("Art QA record altered or falsely approved")
+            if saved["qualityGate"]!=item["qualityGate"]:
+                raise ValueError("Pose QA status does not match actual transformation")
             original = (OUTPUT/(item["pose"]+".png")).read_bytes()
             if "sha256:"+digest(original) != data["variants"][list(PRESETS).index(item["pose"])]["sha256"]:
                 raise ValueError("Committed QA image hash mismatch "+item["pose"])

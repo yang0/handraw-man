@@ -9,6 +9,8 @@ on:
       - "candidates.html"
       - "shapes.html"
       - "bamboo-parts.html"
+      - "assets/qa/bamboo-001/**"
+      - "scripts/qa_bamboo_motion.py"
       - "scripts/slice_bamboo_001.py"
       - "assets/candidates/phase1-fullbody-2026-11-08/parts/**"
       - "assets/candidates/**"
@@ -27,6 +29,8 @@ on:
       - "candidates.html"
       - "shapes.html"
       - "bamboo-parts.html"
+      - "assets/qa/bamboo-001/**"
+      - "scripts/qa_bamboo_motion.py"
       - "scripts/slice_bamboo_001.py"
       - "assets/candidates/phase1-fullbody-2026-11-08/parts/**"
       - "assets/candidates/**"
@@ -54,6 +58,8 @@ jobs:
         run: python -m pip install "Pillow>=11,<14"
       - name: Validate committed real PNGs, hashes, and exact neutral-pose reconstruction
         run: python scripts/slice_bamboo_001.py --verify
+      - name: Verify committed true-PNG articulation QA screenshots and safe margins
+        run: python scripts/qa_bamboo_motion.py --verify
       - name: Syntax check
         run: npm run check
       - name: Unit tests
