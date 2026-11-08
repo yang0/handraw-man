@@ -11,6 +11,8 @@ on:
       - "bamboo-parts.html"
       - "assets/qa/bamboo-001/**"
       - "scripts/qa_bamboo_motion.py"
+      - "scripts/prepare_joint_repair_refs.py"
+      - "assets/repair-inputs/bamboo-001/**"
       - "scripts/slice_bamboo_001.py"
       - "assets/candidates/phase1-fullbody-2026-11-08/parts/**"
       - "assets/candidates/**"
@@ -31,6 +33,8 @@ on:
       - "bamboo-parts.html"
       - "assets/qa/bamboo-001/**"
       - "scripts/qa_bamboo_motion.py"
+      - "scripts/prepare_joint_repair_refs.py"
+      - "assets/repair-inputs/bamboo-001/**"
       - "scripts/slice_bamboo_001.py"
       - "assets/candidates/phase1-fullbody-2026-11-08/parts/**"
       - "assets/candidates/**"
@@ -60,6 +64,8 @@ jobs:
         run: python scripts/slice_bamboo_001.py --verify
       - name: Verify committed true-PNG articulation QA screenshots and safe margins
         run: python scripts/qa_bamboo_motion.py --verify
+      - name: Verify four committed real-image shoulder hip source crops
+        run: python scripts/prepare_joint_repair_refs.py --verify
       - name: Syntax check
         run: npm run check
       - name: Unit tests

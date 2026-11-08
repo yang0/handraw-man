@@ -32,6 +32,13 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - [路线图与验收](docs/ROADMAP.md)
 - [许可与素材来源策略](docs/LICENSING.md)
 
+## Bamboo-001 肩髋修复输入与本地替换试装（Issue #16）
+
+- [四张真实肩髋源图裁片](assets/repair-inputs/bamboo-001/) · [像素裁切与来源 manifest](assets/repair-inputs/bamboo-001/manifest.json)。
+- [装配器](bamboo-parts.html) 支持载入现成的本地透明 RGBA PNG 作为对应手臂/腿部的**试装候选**，A/B 切换、取消、导出 Draft 预览和 SHA-256 缺陷记录，不覆盖原始素材。
+- [完整操作与 QA 边界](docs/BAMBOO-JOINT-REPAIR-INPUTS.md)。
+- **本次新生成的两张图未达到关节素材标准，修复成功且审核通过的肩髋部件仍为 0。** 四张原图裁片只作真实修复参考，不是假装已修复。
+
 ## Bamboo-001 肩关节连接优化候选（Issue #15）
 
 - [原始锚点 vs 校准锚点真实 PNG 对比](assets/qa/bamboo-001/) · [完整视觉 QA 记录](docs/BAMBOO-SHOULDER-CALIBRATION.md)。

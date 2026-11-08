@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs && node --check src/ai-source.mjs && node --check scripts/generate-ai-source.mjs && node --check src/local-image-import.mjs && node --check scripts/import-imagegen-source.mjs && node --check scripts/verify_phase1_fullbody.mjs && node --check web/bamboo-parts.mjs && node --check web/part-transform.mjs",
+    "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs && node --check src/ai-source.mjs && node --check scripts/generate-ai-source.mjs && node --check src/local-image-import.mjs && node --check scripts/import-imagegen-source.mjs && node --check scripts/verify_phase1_fullbody.mjs && node --check web/bamboo-parts.mjs && node --check web/part-transform.mjs && node --check web/repair-candidate.mjs",
     "verify:assets": "python3 scripts/verify_open_peeps.py",
     "ai:generate": "node scripts/generate-ai-source.mjs",
     "ai:import": "node scripts/import-imagegen-source.mjs",
@@ -17,6 +17,7 @@
     "verify:phase1": "node scripts/verify_phase1_fullbody.mjs",
     "parts:generate": "python3 scripts/slice_bamboo_001.py",
     "parts:verify": "python3 scripts/slice_bamboo_001.py --verify",
-    "qa:motion:verify": "python3 scripts/qa_bamboo_motion.py --verify"
+    "qa:motion:verify": "python3 scripts/qa_bamboo_motion.py --verify",
+    "repair:refs:verify": "python3 scripts/prepare_joint_repair_refs.py --verify"
   }
 }

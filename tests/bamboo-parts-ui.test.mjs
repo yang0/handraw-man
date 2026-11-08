@@ -69,3 +69,19 @@ test("shoulder calibration UI is wired, source-preserving, and visually flagged 
   assert.match(app,/ctx\.drawImage\(/);
   assert.doesNotMatch(app,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
 });
+
+test("real joint-repair input gallery and local PNG trial controls are wired",async()=>{
+ const html=await readFile(new URL("../bamboo-parts.html",import.meta.url),"utf8");
+ const app=await readFile(new URL("../web/bamboo-parts.mjs",import.meta.url),"utf8");
+ for(const id of ["replacementFile","chooseReplacement","clearReplacement","useReplacement","replacementInfo"]){
+   assert.match(html,new RegExp('id="'+id+'"'));
+ }
+ for(const path of ["left-shoulder","right-shoulder","left-hip","right-hip"]){
+   assert.match(html,new RegExp('repair-inputs/bamboo-001/'+path+'\\.png'));
+ }
+ assert.match(app,/inspectReplacementBytes/);
+ assert.match(app,/candidateTrialEvidence/);
+ assert.match(app,/candidateImages/);
+ assert.match(app,/PNG 尚未登记入库/);
+ assert.doesNotMatch(app,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
+});
