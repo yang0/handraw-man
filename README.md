@@ -32,6 +32,12 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - [路线图与验收](docs/ROADMAP.md)
 - [许可与素材来源策略](docs/LICENSING.md)
 
+## 真实生图候选素材（Issue #4）
+
+- **[真实 PNG 候选图库](candidates.html)**：已导入 8 张无五官头形裁切图，全部保留原始生成来源与文件 SHA-256，**未通过全身人体母版审核**。
+- [来源与审核结果](docs/SHAPE-CANDIDATE-QA.md) · [逐件候选清单](assets/candidates/native-2026-11-08/manifest.json)
+- 本轮合格全身形体母版：**0 / 48**。生成图片若出现服装、五官或剪影不合格，即使文件可用也不会标记为正式母版。
+
 ## Open Peeps 导入
 
 - [已导入的 164 个原始 SVG 部件](assets/sources/open-peeps/README.md) · [逐件资产 manifest](assets/sources/open-peeps/manifest.json) · [导入审计](docs/OPEN-PEEPS-IMPORT.md)

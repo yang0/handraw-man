@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "batchId": "native-2026-11-08",
+  "sourceKind": "ai-generated",
+  "productionMethod": "ChatGPT built-in image generation -> crop real PNG pixels -> flood-fill background transparency -> grayscale palette quantization",
+  "model": "undisclosed",
+  "source": {
+    "generationId": "4ee27ad6-3795-44aa-bac3-efc27f9af8cb",
+    "filename": "a_clean_high_contrast_black_and_white_handraw_ma.png",
+    "sha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+    "originalPixels": "1536x1024",
+    "availability": "generated in originating ChatGPT conversation, original full resolution image not copied into GitHub repository",
+    "licenseEvidence": "pending review; do not mistake text in source generated poster for a license grant"
+  },
+  "reviewStatus": "draft",
+  "phase1Ready": false,
+  "fullBodyPrototypeCount": 0,
+  "approvedCount": 0,
+  "aiOutputQualityAssessment": "Full figures generated in this batch have faces/clothing and fail Phase 1; head-shaped region offered some usable raw part candidates.",
+  "sharedSource": true,
+  "nearDuplicateRisk": "high",
+  "visualReview": "preliminary human image inspection; requires editorial approval before use",
+  "assets": [
+    {
+      "id": "native-blank-head-01",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-01.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        30,
+        496,
+        87,
+        563
+      ],
+      "width": 57,
+      "height": 67,
+      "sizeBytes": 705,
+      "sha256": "sha256:20c0b85adc9e1c3b7c903f1b7441b9083f974746074e808e78cc5ecb207c6c8f",
+      "gitBlobSha1": "9b7f52a8a15aeaceec366f996574a53125867704",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-02",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-02.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        98,
+        496,
+        155,
+        563
+      ],
+      "width": 57,
+      "height": 67,
+      "sizeBytes": 670,
+      "sha256": "sha256:94c3e3505233c0a44a35eade42ef4c1e63db416c828813256c3907a74c98e10e",
+      "gitBlobSha1": "d5162ef150e3a1d5c4919f82b1cdc3576b107335",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-03",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-03.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        165,
+        496,
+        221,
+        563
+      ],
+      "width": 56,
+      "height": 67,
+      "sizeBytes": 692,
+      "sha256": "sha256:8aad604b74623368a3ea86fbf76e9a82b4b6ce038b17517362230049a256e52f",
+      "gitBlobSha1": "ff2d033b7b838e288b62272531abdaa63617c05e",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-04",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-04.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        233,
+        496,
+        292,
+        563
+      ],
+      "width": 59,
+      "height": 67,
+      "sizeBytes": 692,
+      "sha256": "sha256:a83066fb4fd9e5a46079d7184b187c179a4fbecf2fc710cbdb9b66d8deb0536f",
+      "gitBlobSha1": "cdb3877eeaab8743094c2f6fe3451cfd98808d69",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-05",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-05.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        30,
+        575,
+        89,
+        645
+      ],
+      "width": 59,
+      "height": 70,
+      "sizeBytes": 700,
+      "sha256": "sha256:c2eca9eba30a9a8c9f23ce9c6cc539582ff9ec34973a6d42c2c20eab9a216acc",
+      "gitBlobSha1": "bdccace5ab7cf9ebed1ee73b0b25dc93752e1b80",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-06",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-06.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        96,
+        575,
+        155,
+        645
+      ],
+      "width": 59,
+      "height": 70,
+      "sizeBytes": 692,
+      "sha256": "sha256:9634fb1c0ed6481c41d7242db131b30647b8ca6c7a61ee8fa57f68f590ab2783",
+      "gitBlobSha1": "df285389d30f650700f16c53565395bd6a100efa",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-07",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-07.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        163,
+        575,
+        223,
+        645
+      ],
+      "width": 60,
+      "height": 70,
+      "sizeBytes": 661,
+      "sha256": "sha256:26ac7b9f2ca54b404fd9b04b43b02dc797a87fa014b224581a9e223c700c0d8a",
+      "gitBlobSha1": "915dd73e260b4df54fc73891d9ebfa7099dbe04c",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    },
+    {
+      "id": "native-blank-head-08",
+      "category": "head-outline",
+      "family": null,
+      "filename": "assets/candidates/native-2026-11-08/blank-head-08.png",
+      "sourceParentSha256": "sha256:1aa382e8ad30815f0a2d3810ea8bdaefaf272b8d705d08c8e3ce9261ffa4d6e9",
+      "cropXYXY": [
+        233,
+        575,
+        293,
+        645
+      ],
+      "width": 60,
+      "height": 70,
+      "sizeBytes": 659,
+      "sha256": "sha256:da7ebd056a0b9dd5cb46eda8d66afe03901a03ccc0ba9c35efdc79bdb92644b0",
+      "gitBlobSha1": "50cbb39744a3843e71448a0cd6c484208db9d905",
+      "operations": [
+        "source pixel crop",
+        "connected-white background removal",
+        "grayscale palette quantization"
+      ],
+      "mime": "image/png",
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "noFaceElementsObserved": true,
+      "containsFullBody": false,
+      "limitations": [
+        "Low resolution (~60×70px)",
+        "Derived from same source sheet; visually similar to other variants",
+        "Needs visual border and similarity review",
+        "Parent original high-res image stored in conversation rather than GitHub"
+      ],
+      "licenseEvidence": "pending"
+    }
+  ]
+}

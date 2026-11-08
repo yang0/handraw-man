@@ -6,6 +6,8 @@ on:
     paths:
       - "index.html"
       - "cut-editor.html"
+      - "candidates.html"
+      - "assets/candidates/**"
       - "web/**"
       - "src/**"
       - "scripts/generate-ai-source.mjs"
@@ -17,6 +19,8 @@ on:
     paths:
       - "index.html"
       - "cut-editor.html"
+      - "candidates.html"
+      - "assets/candidates/**"
       - "web/**"
       - "src/**"
       - "scripts/generate-ai-source.mjs"
@@ -37,3 +41,5 @@ jobs:
         run: npm run check
       - name: Unit tests
         run: npm test
+      - name: Verify real image candidates
+        run: npm run verify:candidates

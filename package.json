@@ -12,6 +12,7 @@
     "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs && node --check src/ai-source.mjs && node --check scripts/generate-ai-source.mjs && node --check src/local-image-import.mjs && node --check scripts/import-imagegen-source.mjs",
     "verify:assets": "python3 scripts/verify_open_peeps.py",
     "ai:generate": "node scripts/generate-ai-source.mjs",
-    "ai:import": "node scripts/import-imagegen-source.mjs"
+    "ai:import": "node scripts/import-imagegen-source.mjs",
+    "verify:candidates": "node scripts/verify_candidates.mjs"
   }
 }

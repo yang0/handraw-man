@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HandRaw Man · 真实图像候选素材审核</title>
+<style>
+*{box-sizing:border-box}body{font:14px/1.6 ui-sans-serif,system-ui,"Microsoft Yahei",sans-serif;background:#f6f7f3;color:#26332a;margin:0}
+header{background:white;border-bottom:1px solid #e5eae1;padding:20px max(24px,5vw);display:flex;align-items:center;justify-content:space-between}
+a{color:#2f6543;text-decoration:none}a:hover{text-decoration:underline}nav a{margin-left:18px}
+main{max-width:1160px;padding:36px 24px;margin:auto}h1{font-size:30px;letter-spacing:-1px;margin:0}
+.lead{color:#677969;max-width:730px}.stats{display:flex;gap:14px;flex-wrap:wrap;margin:25px 0 32px}
+.stat{padding:14px 20px;border:1px solid #e4e9df;background:#fff;border-radius:12px;min-width:170px}
+.stat strong{display:block;font-size:26px;letter-spacing:-.7px}.stat span{color:#768675;font-size:12px}
+.flag{display:inline-flex;background:#f2e9dc;color:#94692a;border-radius:20px;padding:3px 10px;font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:16px}
+.card{background:white;border:1px solid #e3e9df;border-radius:14px;padding:13px}.image{height:175px;background:repeating-conic-gradient(#ecefe9 0% 25%,#fff 0% 50%) 50%/24px 24px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.image img{max-width:90%;max-height:88%;object-fit:contain;image-rendering:auto;scale:1.2}
+.card h2{font-size:13px;margin:13px 0 3px}.meta{font-size:11px;color:#8a948b}
+footer{margin:30px 0;font-size:12px;color:#728373}.alert{background:#fff;border-left:3px solid #c19458;padding:14px 20px;border-radius:8px;margin:15px 0 28px;color:#73694e}
+</style></head>
+<body><header><strong>HandRaw Man · 候选素材审核</strong><nav><a href="./index.html">Open Peeps 素材库</a><a href="./cut-editor.html">裁切工作台</a><a href="./docs/SHAPE-CANDIDATE-QA.md">QA 记录</a></nav></header>
+<main><h1>真实素材候选库</h1><p class="lead">此处只展示从实际 ChatGPT 生图中裁切的透明 PNG 草稿。它们不是算法绘制的角色，也尚未通过一期完整人体形体审核。</p>
+<div class="stats"><div class="stat"><strong id="total">—</strong><span>真实透明 PNG 草稿部件</span></div><div class="stat"><strong id="approved">0</strong><span>通过审核的完整人体母版</span></div><div class="stat"><strong>待审核</strong><span>素材来源、相似度与分辨率</span></div></div>
+<div class="alert">8 张头部轮廓来自同一张生成图，外观高度相近、像素较小。不能算作 8 个独立人物原型，更不能用它们代替 12 家族 / 48 个全身母版。</div>
+<div id="candidates" class="cards" aria-live="polite"><p>正在读取真实候选素材…</p></div><footer>来源模型版本：未披露 · 原始大图未包含在 GitHub 仓库中 · 全部素材默认 draft，不能当作已批准的开放图库发布</footer>
+</main><script type="module">
+async function main(){
+ const response=await fetch("./assets/candidates/native-2026-11-08/manifest.json");
+ if(!response.ok)throw Error("读取素材清单失败");
+ const data=await response.json();
+ if(!Array.isArray(data.assets)||data.approvedCount!==0)throw Error("候选素材状态异常");
+ const container=document.querySelector("#candidates");container.replaceChildren();
+ document.querySelector("#total").textContent=String(data.assets.length);
+ document.querySelector("#approved").textContent=String(data.approvedCount);
+ for(const item of data.assets){
+  if(item.reviewStatus!=="draft"||item.phase1Ready!==false)throw Error("草稿审批状态异常");
+  const card=document.createElement("article");card.className="card";
+  const frame=document.createElement("div");frame.className="image";
+  const image=document.createElement("img");image.src="./"+item.filename;image.alt=item.id+" 原图裁切的无五官头形轮廓";image.loading="lazy";frame.append(image);
+  const title=document.createElement("h2");title.textContent=item.id;
+  const status=document.createElement("span");status.className="flag";status.textContent="Draft · 未审核";
+  const meta=document.createElement("p");meta.className="meta";meta.textContent=item.width+"×"+item.height+" PNG · "+item.sizeBytes+" bytes";
+  const link=document.createElement("a");link.href="./"+item.filename;link.textContent="查看真实 PNG";link.target="_blank";link.rel="noopener noreferrer";
+  card.append(frame,title,status,meta,link);container.append(card);
+ }
+}
+main().catch(e=>{document.querySelector("#candidates").textContent=e.message;});
+</script></body></html>
