@@ -5,7 +5,7 @@ import { HEAD_LAYERS, indexAssets, defaultRecipe, validateRecipe, layerPlacement
 const prefix = "assets/sources/open-peeps/atoms/";
 const commit = "c".repeat(40);
 function asset(category, filename) {
-  return { id: "open-peeps-" + category.replaceAll("/", "-") + "-" + filename.replace(/\.svg$/, "").toLowerCase().replaceAll(" ", "-"), category,
+  return { id: "open-peeps-" + category.replaceAll("/", "-") + "-" + filename.replace(/\.svg$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-"), category,
     originalFile: prefix + category + "/" + filename, originalHash: "git-blob-sha1:" + "a".repeat(40) };
 }
 const resources = [
