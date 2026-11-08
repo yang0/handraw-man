@@ -52,9 +52,7 @@ jobs:
           python-version: "3.12"
       - name: Install image processing library
         run: python -m pip install "Pillow>=11,<14"
-      - name: Rebuild actual Bamboo-001 parts from source image
-        run: python scripts/slice_bamboo_001.py
-      - name: Validate real PNGs, hashes, and exact neutral-pose reconstruction
+      - name: Validate committed real PNGs, hashes, and exact neutral-pose reconstruction
         run: python scripts/slice_bamboo_001.py --verify
       - name: Syntax check
         run: npm run check
