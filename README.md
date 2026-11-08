@@ -38,9 +38,24 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - 完整性校验：`python3 scripts/verify_open_peeps.py`
 - 从 Open Peeps 第三方公开镜像按固定 Git SHA 导入；**尚未与官方下载包逐字节对比，全部素材为待人工审核的原件，并非一期纯形体成品**。
 
+## 本地运行素材实验室
+
+本项目当前为**纯静态网页**，无需调用 AI 模型、无需 Docker、无需安装前端依赖。
+
+```bash
+python3 -m http.server 8000
+# 浏览器打开 http://localhost:8000/
+```
+
+可浏览全部 164 个原始 SVG，按头部 / 表情 / 胡须 / 配饰进行图层组合，单独预览身体及姿势原件，并导入导出配方 JSON、导出自包含 SVG。页面必须通过 HTTP 访问，直接双击本地 HTML 可能受到浏览器 file:// 跨源限制。
+
+Node 测试：`npm test`；语法检查：`npm run check`；素材哈希核验：`python3 scripts/verify_open_peeps.py`。
+
+使用与限制请参见 [素材组合 MVP 说明](docs/COMPOSER-MVP.md)、[尚缺的形体素材](docs/ASSET-GAPS.md)。**当前头部组件可组合，身体和姿势只是原件浏览，不是已完成的一期无服饰全身白模。**
+
 ## 当前状态
 
-已创建文档与开发 Issues，正在从原拟议的“程序化 SVG 形体引擎”转换到**真实素材驱动的资产流水线**。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
+已完成真实 SVG 原始素材导入与头部图层组合实验室；下一步是完整白模用图像生成与切割、锚点规范化、全身真正组合及视觉审核。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
 
 [开发任务清单](https://github.com/yang0/handraw-man/issues)
 

@@ -1,4 +1,4 @@
-import { HEAD_VIEWBOX, indexAssets, defaultRecipe, validateRecipe, layerPlacements, exportHeadSvg, firstOfCategory } from "./composer.mjs";
+import { HEAD_VIEWBOX, indexAssets, defaultRecipe, validateRecipe, layerPlacements, exportHeadSvg } from "./composer.mjs";
 
 const LABELS = { head: "头部", face: "表情", "facial-hair": "胡须", accessories: "配饰", body: "身体", pose: "全身姿势" };
 const ORDER = ["head", "face", "facial-hair", "accessories", "body", "pose"];
@@ -166,7 +166,19 @@ function bind() {
       message("配方 JSON 已导出（带固定素材快照版本）。");
     } catch (err) { message("配方导出失败：" + err.message, true); }
   });
-  $("svgDownload").addEventListener("click", exportSvg);
+  $("svgDownload").addEventListener("click", exportSvg);\n  $("recipeImport").addEventListener("click", () => $("recipeFile").click());
+  $("recipeFile").addEventListener("change", async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      if (file.size > 100000) throw new Error("配方文件过大");
+      const imported = JSON.parse(await file.text());
+      validateRecipe(imported, state.byId, state.manifest.mirrorCommit);
+      state.recipe = imported; update();
+      message("已恢复保存的组合配方");
+    } catch (err) { message("无法导入配方：" + err.message, true); }
+    finally { e.target.value = ""; }
+  });
   $("reset").addEventListener("click", () => { state.recipe = defaultRecipe(state.byId, state.manifest.mirrorCommit); update(); });
 }
 async function init() {
