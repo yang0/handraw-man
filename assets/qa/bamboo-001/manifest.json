@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "kind": "bamboo-001-motion-evidence",
+  "sourcePartManifestSha256": "sha256:bdc10dfa3e2488fc20ddd066ab176407717d3b04fa453051c345c1275f32350c",
+  "sourceTransparentSha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+  "artCreationMethod": "transform existing PNG layer pixels only; NO generated body geometry",
+  "canvas": {
+    "width": 994,
+    "height": 1573,
+    "sourceOffsetX": 300,
+    "sourceOffsetY": 40
+  },
+  "formalApproved": false,
+  "reviewStatus": "draft",
+  "findings": [
+    "Neutral pose reproduces source pixels on white background.",
+    "Articulated arm and leg poses can expose hard seams or disconnected outlines.",
+    "These screenshots are QA evidence, NOT curated finished poses."
+  ],
+  "variants": [
+    {
+      "pose": "neutral",
+      "file": "assets/qa/bamboo-001/neutral.png",
+      "width": 994,
+      "height": 1573,
+      "sizeBytes": 81176,
+      "sha256": "sha256:46f330565da01aaba764b42a7ee047269ce74b09ec465afaad6f6ac3d1a384b4",
+      "alphaBoundsXYXY": [
+        317,
+        56,
+        678,
+        1516
+      ],
+      "marginLTRB": [
+        317,
+        56,
+        316,
+        57
+      ],
+      "partAnglesDegrees": {},
+      "reviewStatus": "draft",
+      "articulatedJoinReviewed": false,
+      "qualityGate": "neutral-pixel-identical"
+    },
+    {
+      "pose": "arms-out",
+      "file": "assets/qa/bamboo-001/arms-out.png",
+      "width": 994,
+      "height": 1573,
+      "sizeBytes": 117181,
+      "sha256": "sha256:9a3ca85ce94b89583b4756c2658c90b416e0d5887f56213e5b03cdabe86f4660",
+      "alphaBoundsXYXY": [
+        55,
+        56,
+        940,
+        1516
+      ],
+      "marginLTRB": [
+        55,
+        56,
+        54,
+        57
+      ],
+      "partAnglesDegrees": {
+        "left-arm": 32,
+        "right-arm": -32
+      },
+      "reviewStatus": "draft",
+      "articulatedJoinReviewed": false,
+      "qualityGate": "joint-seams-require-repair"
+    },
+    {
+      "pose": "walk-test",
+      "file": "assets/qa/bamboo-001/walk-test.png",
+      "width": 994,
+      "height": 1573,
+      "sizeBytes": 126928,
+      "sha256": "sha256:3327a7974e3b9370453586dea08c65e6400ab9cc751b036a476c36c34d3aaf06",
+      "alphaBoundsXYXY": [
+        203,
+        56,
+        793,
+        1495
+      ],
+      "marginLTRB": [
+        203,
+        56,
+        201,
+        78
+      ],
+      "partAnglesDegrees": {
+        "left-arm": -10,
+        "right-arm": 10,
+        "left-leg": 10,
+        "right-leg": -10
+      },
+      "reviewStatus": "draft",
+      "articulatedJoinReviewed": false,
+      "qualityGate": "joint-seams-require-repair"
+    }
+  ]
+}
