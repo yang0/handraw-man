@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HandRaw Man 非破坏性素材裁切与锚点标注，仅处理已有 SVG / PNG 素材。">
+  <title>HandRaw Man · 素材切割与锚点工作台</title>
+  <link rel="stylesheet" href="./web/cut-editor.css">
+  <script type="module" src="./web/cut-editor.mjs"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="identity"><a href="./index.html" class="back">← 素材库</a><div class="brand">HandRaw Man <span>/ 资产加工实验室</span></div></div>
+    <span class="tag">真实素材优先 · 禁止程序画人</span>
+  </header>
+  <main>
+    <section class="intro">
+      <div><h1>素材切割与锚点编辑</h1><p>从 Open Peeps 原件或你上传的图片中裁切真实图像。所有人体线条均来自原图，代码只处理图像像素及摆放。</p></div>
+      <div class="switcher">
+        <button id="cutTab" class="active" type="button" aria-pressed="true">01 裁切与锚点</button>
+        <button id="assembleTab" type="button" aria-pressed="false">02 分层装配</button>
+      </div>
+    </section>
+
+    <div class="workspace" id="cutWorkspace">
+      <aside class="panel source-panel">
+        <h2>① 选择源素材</h2>
+        <p class="hint">164 个已导入的 SVG 原件，或本地上传 PNG / JPG / WebP；上传内容只在本机浏览器处理。</p>
+        <label for="sourceCategory">Open Peeps 类别</label>
+        <select id="sourceCategory"><option value="head">头部</option><option value="body">身体</option><option value="pose">姿势</option><option value="face">表情</option><option value="facial-hair">胡须</option><option value="accessories">配饰</option></select>
+        <label for="sourceSelect">已归档原件</label>
+        <select id="sourceSelect"></select>
+        <button id="openSource" class="secondary" type="button">加载选中原件</button>
+        <div class="or"><span>或</span></div>
+        <label class="upload-area" for="uploadSource">
+          <strong>上传自己的源图</strong>
+          <span>PNG / JPG / WebP · 不超过 20 MB</span>
+        </label>
+        <input type="file" id="uploadSource" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="source-info" id="sourceInfo">正在加载素材清单…</div>
+        <p class="hint">官方 Open Peeps 原始作品声明为 CC0，但目前导入的文件实际来自第三方公开镜像，未与官方完整下载包逐文件比对。请继续保留来源信息。</p>
+      </aside>
+
+      <section class="panel stage-panel">
+        <div class="stage-title"><div><h2>② 在原图上框选</h2><p>拖动画面框选裁切区域；切到锚点模式后点击想要连接的位置。</p></div><div class="modebar"><button id="cropMode" class="active" type="button" aria-pressed="true">裁切区域</button><button id="anchorMode" type="button" aria-pressed="false">标记锚点</button></div></div>
+        <div class="stage-shell">
+          <div id="stage" class="stage" role="img" aria-label="原始素材与可交互裁切区域">
+            <img id="sourceImage" alt="原始 Open Peeps 图片">
+            <div id="cropOutline" class="crop-outline" aria-hidden="true"></div>
+            <div id="anchorMarkers" class="anchor-markers" aria-hidden="true"></div>
+          </div>
+          <p class="placeholder" id="stagePlaceholder">请加载素材</p>
+        </div>
+        <div class="stage-footer"><span id="cropSummary">尚未框选</span><span>拖动裁切 · 锚点以选区局部 0..1 坐标保存</span></div>
+        <div class="result-section">
+          <div><h3>处理结果预览</h3><p>透明棋盘背景仅用于检查；导出文件不带棋盘格。</p></div>
+          <div class="result-preview"><canvas id="resultCanvas" aria-label="实际裁切后的像素预览"></canvas></div>
+          <p class="warn" id="removeHint">背景去除为可选的边界连通白色像素清除，可能影响与背景相连的白色衣物，请人工检查。</p>
+        </div>
+      </section>
+
+      <aside class="panel inspector">
+        <h2>③ 定义部件</h2>
+        <label for="partCategory">部件分类</label>
+        <select id="partCategory">
+          <option value="head">头部</option><option value="full-body">完整人物</option>
+          <option value="neck">颈部</option><option value="torso">躯干</option>
+          <option value="left-arm">左臂</option><option value="right-arm">右臂</option>
+          <option value="left-leg">左腿</option><option value="right-leg">右腿</option>
+          <option value="hand">手</option><option value="foot">脚</option><option value="other">其他</option>
+        </select>
+        <label for="partName">命名</label><input id="partName" type="text" maxlength="80" placeholder="例如 bamboo-head-01">
+        <label class="check"><input id="removeWhite" type="checkbox"> 去除与外边界连通的白色背景</label>
+        <label for="whiteThreshold">白色阈值 <output id="thresholdLabel">245</output></label>
+        <input id="whiteThreshold" type="range" min="230" max="255" step="1" value="245">
+        <div class="rule"></div>
+        <label for="anchorName">当前锚点</label><select id="anchorName">
+          <option value="head">头中心</option><option value="neck" selected>颈部</option>
+          <option value="shoulderL">左肩</option><option value="shoulderR">右肩</option>
+          <option value="elbowL">左肘</option><option value="elbowR">右肘</option>
+          <option value="wristL">左腕</option><option value="wristR">右腕</option>
+          <option value="hipL">左髋</option><option value="hipR">右髋</option>
+          <option value="kneeL">左膝</option><option value="kneeR">右膝</option>
+          <option value="ankleL">左踝</option><option value="ankleR">右踝</option>
+          <option value="ground">接地</option>
+        </select>
+        <button id="clearAnchor" class="secondary" type="button">删除当前锚点</button>
+        <div class="anchor-list" id="anchorList">暂无已标记锚点</div>
+        <label for="zIndex">图层顺序 zIndex</label><input type="number" id="zIndex" min="-100" max="100" step="1" value="0">
+        <button id="undo" class="secondary" type="button">撤销上一步</button>
+        <div class="rule"></div>
+        <button id="savePart" class="primary" type="button">加入装配区并生成裁切件</button>
+        <button id="downloadPng" type="button" disabled>下载透明 PNG</button>
+        <button id="downloadMeta" type="button" disabled>下载来源/锚点 JSON</button>
+        <p class="hint">PNG + JSON 需一起保存。原始 SVG 在素材库中不变；自有上传图片需自行保留原件。切割件默认是 <strong>draft</strong>，未经过人工视觉审核。</p>
+      </aside>
+    </div>
+
+    <section id="assembleWorkspace" class="assembly" hidden>
+      <div class="assembly-left panel">
+        <h2>已裁切部件</h2>
+        <p class="hint">仅叠加本次会话中真正裁切的 PNG。也可导入之前下载的 PNG + JSON 配对文件。</p>
+        <div id="partItems" class="part-items">还没有部件</div>
+        <label class="upload-area" for="importParts"><strong>导入已有部件</strong><span>同时选择一张 PNG 及其 JSON</span></label>
+        <input id="importParts" type="file" accept=".png,.json,image/png,application/json" multiple hidden>
+      </div>
+      <div class="assembly-middle panel">
+        <div><h2>组合画布</h2><p class="hint">拖动选中部件的位置；不新增任何人物轮廓。尺寸为 700 × 900。</p></div>
+        <div class="assembly-canvas-wrap"><canvas id="assemblyCanvas" width="700" height="900" aria-label="已有 PNG 部件的分层预览"></canvas></div>
+        <div class="actions"><button id="exportAssemblyPng" type="button" class="primary">导出组合 PNG</button><button id="exportAssemblyJson" type="button">导出组合配方 JSON</button></div>
+      </div>
+      <div class="assembly-right panel">
+        <h2>图层装配参数</h2>
+        <p id="selectedPartName" class="hint">请选择左侧部件</p>
+        <label for="placementX">横向位置 X</label><input id="placementX" type="number" step="1">
+        <label for="placementY">纵向位置 Y</label><input id="placementY" type="number" step="1">
+        <label for="placementScale">缩放比例（仅缩放原图）</label><input id="placementScale" type="number" min="0.1" max="5" step="0.05" value="1">
+        <label for="placementRotation">角度（仅旋转原图）</label><input id="placementRotation" type="number" min="-180" max="180" step="1" value="0">
+        <div class="rule"></div>
+        <h3>已有锚点对齐</h3><p class="hint">选择两个已经标注的真实部件锚点并将它们重合。仅移动图层，不绘制人体结构。</p>
+        <label for="movingAnchor">选中部件锚点</label><select id="movingAnchor"></select>
+        <label for="referencePart">参考部件</label><select id="referencePart"></select>
+        <label for="referenceAnchor">参考锚点</label><select id="referenceAnchor"></select>
+        <button id="alignAnchors" type="button" class="secondary">对齐两个锚点</button>
+        <div class="rule"></div>
+        <p class="hint">自动对齐不会消除原图的遮挡、关节缺损与重影。需人工检查后再将成品标记为可发布。</p>
+      </div>
+    </section>
+    <footer id="status" role="status" aria-live="polite">加载中…</footer>
+  </main>
+</body>
+</html>
