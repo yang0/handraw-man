@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bamboo-001",
+  "derivation": "segmentation of existing true PNG pixels only; no human paths or drawing",
+  "source": {
+    "file": "assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png",
+    "sha256": "sha256:cdd2ec7fbcafca5415c2d5132789367eba387c121edfb5579ddf72c5fc232183",
+    "width": 394,
+    "height": 1493,
+    "generatorModel": "undisclosed"
+  },
+  "strategy": {
+    "headCutY": 246,
+    "armsStartY": 300,
+    "legsStartY": 700,
+    "armsEndY": 900,
+    "midlineX": 197,
+    "armBoundaryControlRows": [
+      [
+        300,
+        142,
+        252
+      ],
+      [
+        380,
+        147,
+        247
+      ],
+      [
+        520,
+        131,
+        263
+      ],
+      [
+        690,
+        105,
+        289
+      ],
+      [
+        900,
+        103,
+        291
+      ]
+    ],
+    "cropPadding": 12,
+    "characterGeometryGeneratedByProgram": false
+  },
+  "parts": [
+    {
+      "id": "bamboo-001-head",
+      "category": "head",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/head.png",
+      "sourceBoundsXYXY": [
+        92,
+        4,
+        305,
+        258
+      ],
+      "width": 213,
+      "height": 254,
+      "sizeBytes": 8743,
+      "sha256": "sha256:034e6990df545bf6de63678684c4436c372f29936fe098cf91065d4c261f4a51",
+      "anchors": {
+        "neck": {
+          "x": 0.49296,
+          "y": 0.88189,
+          "sourceX": 197,
+          "sourceY": 228,
+          "status": "estimated-unreviewed"
+        },
+        "head": {
+          "x": 0.49296,
+          "y": 0.43701,
+          "sourceX": 197,
+          "sourceY": 115,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    },
+    {
+      "id": "bamboo-001-torso",
+      "category": "torso",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/torso.png",
+      "sourceBoundsXYXY": [
+        81,
+        234,
+        313,
+        712
+      ],
+      "width": 232,
+      "height": 478,
+      "sizeBytes": 8659,
+      "sha256": "sha256:a34da418b365d363ca20dc1dc362c8c5ec37c891fa12e7f91b0a1e13df97ae9b",
+      "anchors": {
+        "neck": {
+          "x": 0.5,
+          "y": 0.02301,
+          "sourceX": 197,
+          "sourceY": 245,
+          "status": "estimated-unreviewed"
+        },
+        "shoulderL": {
+          "x": 0.25,
+          "y": 0.18201,
+          "sourceX": 139,
+          "sourceY": 321,
+          "status": "estimated-unreviewed"
+        },
+        "shoulderR": {
+          "x": 0.75,
+          "y": 0.18201,
+          "sourceX": 255,
+          "sourceY": 321,
+          "status": "estimated-unreviewed"
+        },
+        "hipL": {
+          "x": 0.28017,
+          "y": 0.96444,
+          "sourceX": 146,
+          "sourceY": 695,
+          "status": "estimated-unreviewed"
+        },
+        "hipR": {
+          "x": 0.71552,
+          "y": 0.96444,
+          "sourceX": 247,
+          "sourceY": 695,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    },
+    {
+      "id": "bamboo-001-left-arm",
+      "category": "left-arm",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/left-arm.png",
+      "sourceBoundsXYXY": [
+        5,
+        288,
+        156,
+        896
+      ],
+      "width": 151,
+      "height": 608,
+      "sizeBytes": 13997,
+      "sha256": "sha256:e12804a496a7fdb095d354df4c48f1c4b17cc145be4375dae06058a8f34773e4",
+      "anchors": {
+        "shoulderL": {
+          "x": 0.90728,
+          "y": 0.02303,
+          "sourceX": 142,
+          "sourceY": 302,
+          "status": "estimated-unreviewed"
+        },
+        "wristL": {
+          "x": 0.39735,
+          "y": 0.87993,
+          "sourceX": 65,
+          "sourceY": 823,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    },
+    {
+      "id": "bamboo-001-right-arm",
+      "category": "right-arm",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/right-arm.png",
+      "sourceBoundsXYXY": [
+        238,
+        288,
+        390,
+        896
+      ],
+      "width": 152,
+      "height": 608,
+      "sizeBytes": 14067,
+      "sha256": "sha256:1f75b4073a8451535a3d01c3ecccef778964ad4c2e4e29edd72c745cce01ccd5",
+      "anchors": {
+        "shoulderR": {
+          "x": 0.09211,
+          "y": 0.02303,
+          "sourceX": 252,
+          "sourceY": 302,
+          "status": "estimated-unreviewed"
+        },
+        "wristR": {
+          "x": 0.625,
+          "y": 0.87993,
+          "sourceX": 333,
+          "sourceY": 823,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    },
+    {
+      "id": "bamboo-001-left-leg",
+      "category": "left-leg",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/left-leg.png",
+      "sourceBoundsXYXY": [
+        19,
+        688,
+        209,
+        1488
+      ],
+      "width": 190,
+      "height": 800,
+      "sizeBytes": 13727,
+      "sha256": "sha256:260b002d4a5bf48b86e37955904f4db602567e50a0b2a823c31c11d713b83645",
+      "anchors": {
+        "hipL": {
+          "x": 0.68947,
+          "y": 0.01625,
+          "sourceX": 150,
+          "sourceY": 701,
+          "status": "estimated-unreviewed"
+        },
+        "ankleL": {
+          "x": 0.51053,
+          "y": 0.86625,
+          "sourceX": 116,
+          "sourceY": 1381,
+          "status": "estimated-unreviewed"
+        },
+        "ground": {
+          "x": 0.42105,
+          "y": 0.975,
+          "sourceX": 99,
+          "sourceY": 1468,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    },
+    {
+      "id": "bamboo-001-right-leg",
+      "category": "right-leg",
+      "file": "assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/right-leg.png",
+      "sourceBoundsXYXY": [
+        185,
+        688,
+        376,
+        1488
+      ],
+      "width": 191,
+      "height": 800,
+      "sizeBytes": 13599,
+      "sha256": "sha256:05b94c253b3bd2b7d79db4af13beb40326a59505cc825cbd5b9970da54b3c731",
+      "anchors": {
+        "hipR": {
+          "x": 0.31414,
+          "y": 0.01625,
+          "sourceX": 245,
+          "sourceY": 701,
+          "status": "estimated-unreviewed"
+        },
+        "ankleR": {
+          "x": 0.49738,
+          "y": 0.86625,
+          "sourceX": 280,
+          "sourceY": 1381,
+          "status": "estimated-unreviewed"
+        },
+        "ground": {
+          "x": 0.56545,
+          "y": 0.975,
+          "sourceX": 293,
+          "sourceY": 1468,
+          "status": "estimated-unreviewed"
+        }
+      },
+      "reviewStatus": "draft",
+      "phase1Ready": false,
+      "articulatedJoinReviewed": false
+    }
+  ],
+  "visualRecompositionOnWhite": "pixel-exact",
+  "reviewStatus": "draft",
+  "phase1Ready": false,
+  "limitations": [
+    "Source outline crosses some cut boundaries; moving individual parts exposes hard seams.",
+    "Anchor positions are estimates, not human-approved joint coordinates.",
+    "Only the original neutral pose has passed pixel-exact compositing validation.",
+    "No inpainting, drawing or occlusion repair of missing limbs was performed."
+  ]
+}
