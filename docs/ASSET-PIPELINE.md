@@ -2,7 +2,7 @@
 
 ## 目标
 
-`素材检索/授权审查 -> 导入或 GPT Image 生成 -> 切割/抠图 -> 人工对齐锚点 -> 质量审核 -> 资产注册 -> 分层组合 -> 导出`
+`素材检索/授权审查 -> ChatGPT 内置生图（缺件时）/可选 API -> 实际原图归档 -> 切割/抠图 -> 人工对齐锚点 -> 视觉审核 -> 资产注册 -> 分层组合 -> 导出`
 
 **绝不让代码凭几何公式绘制人物。**
 
@@ -14,7 +14,11 @@
 4. 将源文件放 `assets/sources/open-peeps/`（后续任务），处理稿放 `assets/processed/`，元数据进入 catalog。
 5. 人工检查连接与风格；确认哪些属于官方 CC0、哪些为第三方改动并分别声明。
 
-## 路径 B：缺少素材时使用 `gpt-image-2.6`
+## 路径 B：缺少素材时直接使用 ChatGPT 内置生图（首选）
+
+无密钥直接导入：`node scripts/import-imagegen-source.mjs --input 图片路径 --family bamboo`，详见 [直接生图归档手册](IMAGEGEN-DIRECT-WORKFLOW.md)。开发/测试不需要号池，也不需要知道 ChatGPT 内置生图工具未披露的底层模型版本。
+
+## 路径 C：外部 API `gpt-image-2.6`（可选自动化方式）
 
 代码入口：`node scripts/generate-ai-source.mjs --family bamboo`，对应 [生成与归档操作手册](AI-SOURCE-PIPELINE.md)。本机通过环境变量访问 DSH 号池，源图草稿在 `assets/sources/ai/drafts/`，裁切工作台可在「AI 草稿」分类读取；不会将模拟测试当作真实出图。
 

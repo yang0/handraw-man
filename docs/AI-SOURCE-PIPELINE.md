@@ -1,4 +1,4 @@
-# GPT Image 2.6 原始形体素材生成与归档 · Issue #9
+# 可选 DSH API 的 GPT Image 2.6 原图生成与归档 · Issue #9
 
 **强制遵守** [TOP_LEVEL_RULES.md](../TOP_LEVEL_RULES.md)：程序不绘制任何人物形体，仅从真实模型响应中接收图片字节，并将图片交给现有切割与锚点工作台。
 
@@ -8,6 +8,8 @@
 - `scripts/generate-ai-source.mjs`：Node 22 CLI；只调用配置的 `/v1/models` 与 `/v1/images/generations`。
 - `assets/sources/ai/drafts/`：本机生成的源图片、单件 JSON、`index.json`；**被 gitignore 排除，未经审查不能自动发布**。
 - `cut-editor.html`：左侧选「AI 草稿（本机生成）」直接加载原图（哈希校验），裁切、抠图、标注锚点、再生成透明 PNG/来源 JSON。
+
+> **不是默认开发流程：** 普通开发直接通过 ChatGPT 内置生图并运行 [无密钥本地导入工具](IMAGEGEN-DIRECT-WORKFLOW.md) 即可完成真实素材测试。以下号池方案只用于有独立 API 自动化需要的情况。
 
 ## Windows PowerShell 操作
 
