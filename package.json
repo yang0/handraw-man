@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs",
-    "verify:assets": "python3 scripts/verify_open_peeps.py"
+    "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs && node --check src/ai-source.mjs && node --check scripts/generate-ai-source.mjs",
+    "verify:assets": "python3 scripts/verify_open_peeps.py",
+    "ai:generate": "node scripts/generate-ai-source.mjs"
   }
 }

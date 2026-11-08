@@ -1,0 +1,7 @@
+# Model-generated artwork is draft content until provenance/quality/licensing review.
+# The immutable originals remain on the operator's local machine.
+assets/sources/ai/drafts/
+# Never commit API keys.
+.env
+.env.*
+!.env.example

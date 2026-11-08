@@ -6,6 +6,10 @@
 
 在仓库根目录执行 `python3 -m http.server 8000`，浏览器访问 `http://localhost:8000/cut-editor.html`。无需 Node 构建、Docker 或 AI API。
 
+## GPT Image 草稿接入
+
+在仓库根目录用 `node scripts/generate-ai-source.mjs --family bamboo` 调用真实配置的 `gpt-image-2.6`（需本地设置环境变量，详见 [AI 素材生成手册](AI-SOURCE-PIPELINE.md)）。生成成功后，当前网页的「素材来源 / 类别」选择 **AI 草稿（本机生成）**，可加载已归档原图。加载时对照记录的 SHA-256 校验真实图片字节，后续裁切 JSON 中保留 `sourceKind=ai-generated` 与生成模型/提示词信息。网页本身不获取 API Key。
+
 ## 裁切与装配流程
 
 1. 选择 164 个 Open Peeps 已导入的 SVG 原件之一，或上传本机 PNG/JPG/WebP（最大 20MB）；自有图片需自行确认授权。

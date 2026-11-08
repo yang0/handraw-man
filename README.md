@@ -49,6 +49,12 @@ python3 -m http.server 8000
 
 可浏览全部 164 个原始 SVG，按头部 / 表情 / 胡须 / 配饰进行图层组合，单独预览身体及姿势原件，并导入导出配方 JSON、导出自包含 SVG。页面必须通过 HTTP 访问，直接双击本地 HTML 可能受到浏览器 file:// 跨源限制。
 
+### GPT Image 2.6 原生图片来源生成（Issue #9）
+
+新增 [生图命令行入口](scripts/generate-ai-source.mjs)：通过你现有 DSH 号池 `/v1/models` 与 `/v1/images/generations` 请求真正的 `gpt-image-2.6` 图片，并归档原始字节、SHA-256、模型/提示词和来源 JSON，不生成代码人物。生成草稿可直接在裁切工作台左侧选「AI 草稿（本机生成）」加载。
+
+**默认不连接任何 API，必须用户自己在本机设置环境变量并运行。** 详见 [AI 素材生成、归档与验收操作手册](docs/AI-SOURCE-PIPELINE.md)。尚未完成真实账号端到端验收。
+
 ### 切割与锚点编辑器
 
 访问 [cut-editor.html](cut-editor.html)（本地地址：http://localhost:8000/cut-editor.html）。可以裁切已导入的真实 SVG，或本地上传 PNG/JPG/WebP；标记颈部、肩部、髋部等锚点，透明 PNG 与来源 JSON 分开导出，并把本次裁切的真实图片分层摆放和按锚点对齐。编辑器不通过程序绘制人体。
@@ -61,7 +67,7 @@ Node 测试：`npm test`；语法检查：`npm run check`；素材哈希核验�
 
 ## 当前状态
 
-已完成原始 SVG 归档、头部图层组合，以及人工裁切 / 锚点工作台。完整全身人物的语义分切、AI 生图和美术审核仍待实现。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
+已完成原始 SVG 归档、头部组合、人工裁切与锚点编辑，以及真实模型生成 CLI/草稿归档适配层；在本地提供密钥并成功出图、真实全身部件切割和人工视觉审核之前，Issue #9 仍为未完成。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
 
 [开发任务清单](https://github.com/yang0/handraw-man/issues)
 
