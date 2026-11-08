@@ -85,3 +85,13 @@ test("real joint-repair input gallery and local PNG trial controls are wired",as
  assert.match(app,/PNG 尚未登记入库/);
  assert.doesNotMatch(app,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
 });
+
+test("repair preview verifies decoded transparency and actual pixel differences, never fake approval",async()=>{
+ const js=await readFile(new URL("../web/bamboo-parts.mjs",import.meta.url),"utf8");
+ assert.match(js,/checkRealPngPixelsDiffer/);
+ assert.match(js,/getImageData/);
+ assert.match(js,/浏览器无法核验 RGBA 实际像素/);
+ assert.match(js,/state\.useCandidates=false; \/\/ A saved base recipe/);
+ assert.match(js,/candidateTrialEvidence/);
+ assert.doesNotMatch(js,/\b(stroke|fillRect|strokeRect|moveTo|lineTo|bezierCurveTo|arc|ellipse)\s*\(/);
+});

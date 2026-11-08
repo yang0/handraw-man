@@ -42,6 +42,28 @@ async function loadImage(part) {
     });
   } finally {URL.revokeObjectURL(url);}
 }
+function checkRealPngPixelsDiffer(candidate,original,width,height){
+  // Canvas is used only to READ/COMPARE two existing PNGs, never to draw strokes.
+  const probe=document.createElement("canvas");probe.width=width;probe.height=height;
+  const ctx=probe.getContext("2d",{willReadFrequently:true});
+  if(!ctx)throw Error("浏览器无法核验 RGBA 实际像素");
+  ctx.clearRect(0,0,width,height);
+  ctx.drawImage(candidate,0,0);
+  const after=ctx.getImageData(0,0,width,height).data;
+  ctx.clearRect(0,0,width,height);
+  ctx.drawImage(original,0,0);
+  const before=ctx.getImageData(0,0,width,height).data;
+  let transparent=false,altered=false;
+  for(let i=0;i<after.length;i+=4){
+    if(after[i+3]===0)transparent=true;
+    if(after[i]!==before[i]||after[i+1]!==before[i+1]||
+       after[i+2]!==before[i+2]||after[i+3]!==before[i+3])altered=true;
+    if(transparent&&altered)break;
+  }
+  if(!transparent)throw Error("候选 PNG 虽是 RGBA，但实际像素没有透明背景");
+  if(!altered)throw Error("候选图片像素与原件完全相同，不能当作已修复的新素材");
+}
+
 function selectedPart() { return state.parts.find(p=>p.id===state.selected)||null; }
 function draw() {
   const canvas=$("board"),ctx=canvas.getContext("2d");
@@ -256,6 +278,7 @@ function bind(){
       }finally{URL.revokeObjectURL(url);}
       if(image.naturalWidth!==part.width||image.naturalHeight!==part.height)
         throw Error("解码后的 PNG 尺寸与清单不一致");
+      checkRealPngPixelsDiffer(image,state.images.get(part.id),part.width,part.height);
       // Same-size image replacements only; no local persistence or automatic approval.
       state.candidateImages.set(part.id,image);
       state.replacements.set(part.id,evidence);
@@ -284,6 +307,7 @@ function bind(){
       if(file.size>100000)throw Error("配方文件超过100KB");
       const json=JSON.parse(await file.text());
       state.parts=validateImportedPose(json,state.catalog);
+      state.useCandidates=false; // A saved base recipe cannot restore local binary candidates.
       state.selected=state.parts[0].id;
       setCustom();renderList();updateControls();draw();
       status("已按真实 PNG 哈希校验并恢复六个部件的姿态；仍为未批准草稿");
