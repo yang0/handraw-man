@@ -49,13 +49,19 @@ python3 -m http.server 8000
 
 可浏览全部 164 个原始 SVG，按头部 / 表情 / 胡须 / 配饰进行图层组合，单独预览身体及姿势原件，并导入导出配方 JSON、导出自包含 SVG。页面必须通过 HTTP 访问，直接双击本地 HTML 可能受到浏览器 file:// 跨源限制。
 
+### 切割与锚点编辑器
+
+访问 [cut-editor.html](cut-editor.html)（本地地址：http://localhost:8000/cut-editor.html）。可以裁切已导入的真实 SVG，或本地上传 PNG/JPG/WebP；标记颈部、肩部、髋部等锚点，透明 PNG 与来源 JSON 分开导出，并把本次裁切的真实图片分层摆放和按锚点对齐。编辑器不通过程序绘制人体。
+
+详见 [使用与验收说明](docs/CUTTING-WORKFLOW.md)。目前仍是手工框选工具，并非自动人物语义分割或已审核的 48 个白模。
+
 Node 测试：`npm test`；语法检查：`npm run check`；素材哈希核验：`python3 scripts/verify_open_peeps.py`。
 
 使用与限制请参见 [素材组合 MVP 说明](docs/COMPOSER-MVP.md)、[尚缺的形体素材](docs/ASSET-GAPS.md)。**当前头部组件可组合，身体和姿势只是原件浏览，不是已完成的一期无服饰全身白模。**
 
 ## 当前状态
 
-已完成真实 SVG 原始素材导入与头部图层组合实验室；下一步是完整白模用图像生成与切割、锚点规范化、全身真正组合及视觉审核。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
+已完成原始 SVG 归档、头部图层组合，以及人工裁切 / 锚点工作台。完整全身人物的语义分切、AI 生图和美术审核仍待实现。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
 
 [开发任务清单](https://github.com/yang0/handraw-man/issues)
 

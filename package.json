@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Asset-first character component library; no procedural human drawing",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check web/composer.mjs && node --check web/app.mjs",
+    "check": "node --check web/composer.mjs && node --check web/app.mjs && node --check web/cut-core.mjs && node --check web/cut-editor.mjs",
     "verify:assets": "python3 scripts/verify_open_peeps.py"
   }
 }
