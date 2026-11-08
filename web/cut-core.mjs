@@ -108,7 +108,7 @@ export function makeDerivativeRecord({ source, crop, anchors, category, pngHash,
   const safeCrop = clampCrop(crop, source.width, source.height);
   return {
     schemaVersion: 1,
-    id: "part-" + safeSlug(source.name) + "-" + pngHash.slice(0, 12),
+    id: "part-" + category + "-" + safeSlug(source.name) + "-" + pngHash.slice(0, 12),
     sourceKind: source.sourceKind,
     category,
     reviewStatus: "draft",
@@ -124,7 +124,7 @@ export function makeDerivativeRecord({ source, crop, anchors, category, pngHash,
       licenseEvidence: source.licenseEvidence || "pending"
     },
     processed: {
-      filename: "part-" + safeSlug(source.name) + "-" + pngHash.slice(0, 12) + ".png",
+      filename: "part-" + category + "-" + safeSlug(source.name) + "-" + pngHash.slice(0, 12) + ".png",
       sha256: "sha256:" + pngHash,
       mime: "image/png",
       width: safeCrop.width,

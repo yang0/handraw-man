@@ -110,9 +110,15 @@ async function initializeSource(blob, name, details) {
       .join("\n");
     $("sourceInfo").style.whiteSpace="pre-line";
     resizeStage();
-    await drawPreview();
+    if (state.crop.width * state.crop.height <= MAX_PIXELS) {
+      await drawPreview();
+      status("已加载原始素材：" + name + "。可拖拽重新框选，原图不会被改写。");
+    } else {
+      const preview=resultCanvas();
+      preview.width=preview.height=1;
+      status("源图已加载，默认裁切范围过大；请先框选不超过 1600 万像素的区域。");
+    }
     updateAnchors();
-    status("已加载原始素材：" + name + "。可拖拽重新框选，原图不会被改写。");
   } catch(e) { URL.revokeObjectURL(url); throw e; }
 }
 async function openMirrorAsset() {
