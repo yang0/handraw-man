@@ -32,6 +32,12 @@ HandRaw 原创及开放授权人物素材库 · AI 生图 · 分切部件 · 分
 - [路线图与验收](docs/ROADMAP.md)
 - [许可与素材来源策略](docs/LICENSING.md)
 
+## Open Peeps 导入
+
+- [已导入的 164 个原始 SVG 部件](assets/sources/open-peeps/README.md) · [逐件资产 manifest](assets/sources/open-peeps/manifest.json) · [导入审计](docs/OPEN-PEEPS-IMPORT.md)
+- 完整性校验：`python3 scripts/verify_open_peeps.py`
+- 从 Open Peeps 第三方公开镜像按固定 Git SHA 导入；**尚未与官方下载包逐字节对比，全部素材为待人工审核的原件，并非一期纯形体成品**。
+
 ## 当前状态
 
 已创建文档与开发 Issues，正在从原拟议的“程序化 SVG 形体引擎”转换到**真实素材驱动的资产流水线**。Issue 的“创建”不代表代码或素材已经完成；以实际可运行的模块/下载素材/生成记录/测试/CI 为准。
