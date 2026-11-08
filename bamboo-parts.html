@@ -78,6 +78,28 @@
           </a>
         </div>
       </details>
+      <details class="repair-inputs-gallery">
+        <summary>肩髋真实原图局部（仅供修复参考，不是完成的关节）</summary>
+        <div class="repair-inputs-grid">
+          <a href="./assets/repair-inputs/bamboo-001/left-shoulder.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/repair-inputs/bamboo-001/left-shoulder.png" alt="左肩原图像素裁片">
+            <span>左肩原图裁片</span>
+          </a>
+          <a href="./assets/repair-inputs/bamboo-001/right-shoulder.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/repair-inputs/bamboo-001/right-shoulder.png" alt="右肩原图像素裁片">
+            <span>右肩原图裁片</span>
+          </a>
+          <a href="./assets/repair-inputs/bamboo-001/left-hip.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/repair-inputs/bamboo-001/left-hip.png" alt="左髋原图像素裁片">
+            <span>左髋原图裁片</span>
+          </a>
+          <a href="./assets/repair-inputs/bamboo-001/right-hip.png" target="_blank" rel="noopener noreferrer">
+            <img src="./assets/repair-inputs/bamboo-001/right-hip.png" alt="右髋原图像素裁片">
+            <span>右髋原图裁片</span>
+          </a>
+        </div>
+        <a href="./assets/repair-inputs/bamboo-001/manifest.json" target="_blank" rel="noopener noreferrer">查看原图裁切与哈希清单</a>
+      </details>
       <div class="source-line"><span>用于校对的原始完整透明图</span><a href="./assets/candidates/phase1-fullbody-2026-11-08/processed/bamboo-001-transparent.png" target="_blank" rel="noopener noreferrer">查看原件</a></div>
       <p class="warning">肩部锚点校准是原图层旋转轴的人工位置修正，并非新的关节绘画；局部笔画重叠和髋部缺口仍需真实图像修复。当前用的是按原图像素位置切割的边界，不是完整的关节分层设计。移动手臂或腿部后，切口可能露出断线、遮挡或缺损；此现象需要真实修图，不能让程序补画身体。</p>
     </section>
@@ -108,6 +130,16 @@
       <output id="valueScale">100%</output>
       <label class="check-row" for="showAnchors"><input type="checkbox" id="showAnchors"> 显示当前部件真实锚点</label>
       <button class="soft" id="zeroSelected" type="button">还原所选部件位置</button>
+      <div class="break"></div>
+      <h3>真实 PNG 修复候选试装</h3>
+      <p class="hint">只接受已有的透明 RGBA PNG（与所选手臂/腿部原件尺寸相同）。候选不自动入库，源图及六个原件均保持不变。</p>
+      <button class="soft" id="chooseReplacement" type="button">加载所选部件的本地修复 PNG</button>
+      <input id="replacementFile" type="file" accept=".png,image/png" hidden>
+      <label for="useReplacement" class="check-row">
+        <input id="useReplacement" type="checkbox"> 在预览中使用本地替换 PNG
+      </label>
+      <div id="replacementInfo" class="replacement-info" role="status">没有替换图片</div>
+      <button class="soft" id="clearReplacement" type="button">撤销所选部件的修复候选</button>
       <div class="break"></div>
       <h3>接缝审查记录</h3>
       <p class="hint">这里只能记录缺陷，无法将未修复的源图标记为通过。</p>

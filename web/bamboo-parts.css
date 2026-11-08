@@ -30,3 +30,11 @@
 
 .calibration-header{margin:20px 0 6px;font-weight:700;font-size:12px;color:#476e55}
 .anchor-dot.calibrated{background:#a84449;outline:2px solid #fff}
+
+/* Repair source is imagery, not code-generated body art. */
+.repair-inputs-gallery{margin:14px 0;border:1px solid #e3e9df;border-radius:8px;padding:12px}
+.repair-inputs-gallery summary{cursor:pointer;color:#446b4d;font-size:11px}
+.repair-inputs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}
+.repair-inputs-grid a{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;text-align:center}
+.repair-inputs-grid img{max-height:100px;width:100%;object-fit:contain;background:#fff;border:1px solid #e3e7e0;border-radius:5px}
+.replacement-info{border-radius:7px;background:#faf6ed;border:1px solid #efdfc8;padding:8px;font-size:10px;overflow-wrap:anywhere;color:#866d3d;margin:9px 0}

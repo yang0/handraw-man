@@ -6,12 +6,14 @@ import {
   chooseDefaultPivot,neutralPart,validateTransform,imageTransform,anchorPlacement,
   isOriginalPose,posePreset,exportPoseRecipe,validateImportedPose,buildJointQARecord,calibratedPivotPlacement
 } from "./part-transform.mjs";
+import {inspectReplacementBytes,candidateTrialEvidence} from "./repair-candidate.mjs";
 
 const $=id=>document.getElementById(id);
 const SOURCE="./assets/candidates/phase1-fullbody-2026-11-08/parts/bamboo-001/manifest.json";
 const BOARD={width:994,height:1573,originX:300,originY:40};
 const names={head:"头部",torso:"躯干","left-arm":"左手臂","right-arm":"右手臂","left-leg":"左腿","right-leg":"右腿"};
-const state={catalog:null,parts:[],images:new Map(),selected:null,preset:"neutral"};
+const state={catalog:null,parts:[],images:new Map(),selected:null,preset:"neutral",
+  replacements:new Map(),candidateImages:new Map(),useCandidates:false};
 function status(message,error=false) {
   $("status").textContent=message;
   $("status").style.color=error?"#a23c38":"#52775c";
@@ -49,7 +51,7 @@ function draw() {
   ctx.translate(BOARD.originX,BOARD.originY);
   for(const p of state.parts) {
     if(!p.visible)continue;
-    const img=state.images.get(p.id);
+    const img=(state.useCandidates?state.candidateImages.get(p.id):null)||state.images.get(p.id);
     if(!img)continue;
     const t=imageTransform(p);
     ctx.save();
@@ -113,7 +115,9 @@ function renderList() {
       state.selected=p.id;renderList();updateControls();draw();
     });
     const detail=document.createElement("small");
-    detail.textContent=p.width+"×"+p.height+" · "+p.pivotAnchor+(p.pivotShiftX||p.pivotShiftY?" · 轴心微调":"")+" · 未审";
+    detail.textContent=p.width+"×"+p.height+" · "+p.pivotAnchor+
+      (p.pivotShiftX||p.pivotShiftY?" · 轴心微调":"")+
+      (state.replacements.has(p.id)?" · 本地修复候选":"")+" · 未审";
     content.append(button,detail);row.append(visible,img,content);root.append(row);
   }
 }
@@ -145,6 +149,14 @@ function updateControls() {
   pivot.disabled=!p;
   $("zeroSelected").disabled=!p;
   $("resetPivot").disabled=!p || (!p.pivotShiftX && !p.pivotShiftY);
+  $("chooseReplacement").disabled=!p || !["left-arm","right-arm","left-leg","right-leg"].includes(p.category);
+  $("clearReplacement").disabled=!p || !state.replacements.has(p.id);
+  const candidate=p?state.replacements.get(p.id):null;
+  $("replacementInfo").textContent=candidate?
+    "本地草稿 "+candidate.fileName+" · "+candidate.sha256.slice(0,24)+"…（尚未入库）":
+    "所选部件尚无替换图片。本功能不生成新人体，只试装已有透明 PNG。";
+  $("useReplacement").checked=state.useCandidates;
+  $("useReplacement").disabled=state.replacements.size===0;
 }
 function setCustom(){
   state.preset="custom";
@@ -214,8 +226,56 @@ function bind(){
     try{showPreset(name);}catch(error){status(error.message,true);}
   });
   $("downloadRecipe").addEventListener("click",()=>{
-    try{saveJSON(exportPoseRecipe(state.parts,state.catalog),"bamboo-001-joint-recipe.json");}
+    try{
+      if(state.useCandidates&&state.replacements.size>0)
+        throw Error("本地替换 PNG 尚未登记入库，配方无法复现候选图；请先关闭试装模式，或导出 QA 记录。");
+      saveJSON(exportPoseRecipe(state.parts,state.catalog),"bamboo-001-joint-recipe.json");
     catch(error){status(error.message,true);}
+  });
+  $("chooseReplacement").addEventListener("click",()=>$("replacementFile").click());
+  $("replacementFile").addEventListener("change",async e=>{
+    const file=e.target.files?.[0],part=selectedPart();
+    if(!file||!part)return;
+    try{
+      if(!globalThis.crypto?.subtle)throw Error("请使用 localhost/HTTPS 校验候选图片");
+      if(file.size>16*1024*1024)throw Error("图片超过 16MB");
+      const data=await file.arrayBuffer();
+      const dig=await crypto.subtle.digest("SHA-256",data);
+      const hash="sha256:"+[...new Uint8Array(dig)].map(n=>n.toString(16).padStart(2,"0")).join("");
+      const evidence=inspectReplacementBytes(data,part,{filename:file.name,hash});
+      // Decode actual submitted bytes. No code synthesizes or repairs body strokes.
+      const url=URL.createObjectURL(new Blob([data],{type:"image/png"}));
+      let image;
+      try{
+        image=await new Promise((resolve,reject)=>{
+          const candidate=new Image();
+          candidate.onload=()=>resolve(candidate);
+          candidate.onerror=()=>reject(Error("候选不是可解码的真实 PNG"));
+          candidate.src=url;
+        });
+      }finally{URL.revokeObjectURL(url);}
+      if(image.naturalWidth!==part.width||image.naturalHeight!==part.height)
+        throw Error("解码后的 PNG 尺寸与清单不一致");
+      // Same-size image replacements only; no local persistence or automatic approval.
+      state.candidateImages.set(part.id,image);
+      state.replacements.set(part.id,evidence);
+      state.useCandidates=true;
+      renderList();updateControls();draw();
+      status("真实透明 PNG 已加载为本地试装草稿；请检查肩髋断线并导出 QA 证据，未批准发布。");
+    }catch(error){status("替换失败："+error.message,true);}
+    finally{e.target.value="";}
+  });
+  $("clearReplacement").addEventListener("click",()=>{
+    const p=selectedPart();if(!p)return;
+    state.candidateImages.delete(p.id);
+    state.replacements.delete(p.id);
+    if(!state.replacements.size)state.useCandidates=false;
+    renderList();updateControls();draw();
+    status("已撤销所选部件的本地替换，源 PNG 和源配方均未修改。");
+  });
+  $("useReplacement").addEventListener("change",e=>{
+    state.useCandidates=e.target.checked && state.replacements.size>0;
+    updateControls();draw();
   });
   $("importRecipe").addEventListener("click",()=>$("recipeFile").click());
   $("recipeFile").addEventListener("change",async e=>{
@@ -235,6 +295,7 @@ function bind(){
       const report=buildJointQARecord(state.parts,state.catalog,{
         defect:$("qaDefect").value,notes:$("qaNotes").value
       });
+      report.localReplacementTrial=candidateTrialEvidence(state.replacements,state.useCandidates);
       saveJSON(report,"bamboo-001-joint-defect-report.json");
       status("接缝审查记录已导出：本批部件仍为 Draft，不能作为已修复素材发布");
     }catch(error){status(error.message,true);}
@@ -245,7 +306,8 @@ function bind(){
       draw();
       $("board").toBlob(blob=>{
         if(!blob)return status("无法导出 PNG",true);
-        saveBlob(blob,"bamboo-001-joint-preview.png");
+        saveBlob(blob,state.useCandidates&&state.replacements.size?
+          "bamboo-001-unapproved-joint-repair-preview.png":"bamboo-001-joint-preview.png");
       },"image/png");
     }catch(error){status(error.message,true);}
   });
